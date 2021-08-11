@@ -9,6 +9,8 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 	.gitignore = .gitignore
 	Dockerfile = Dockerfile
+	env.list = env.list
+	env.example.list = env.example.list
 EndProjectSection
 EndProject
 Global

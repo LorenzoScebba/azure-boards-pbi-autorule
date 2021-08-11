@@ -11,7 +11,13 @@
 
 ### How to run in docker env (hopefully, im not testing this :P):
 
-Use the following env variables:
+Use the env variables declared in the env.list file (env.example.list):
+
+*lorenzoscebba.azurecr.io/azure-boards-pbi-autorule:latest is a private repo, build your own image ;)*
+
+```bash
+docker run --env-file env.list lorenzoscebba.azurecr.io/azure-boards-pbi-autorule:latest
+```
 
 ```json
 {
@@ -39,4 +45,111 @@ Use the following env variables:
   "Rules__Rules__2__SetParentStateTo": "Done",
   "Rules__Rules__2__AllChildren": true
 }
+```
+
+Or on azure bulk edit: 
+
+```json
+[
+  {
+    "name": "Logging__LogLevel__Default",
+    "value": "Information",
+    "slotSetting": false
+  },
+  {
+    "name": "Logging__LogLevel__Microsoft",
+    "value": "Warning",
+    "slotSetting": false
+  },
+  {
+    "name": "Logging__LogLevel__Microsoft.Hosting.Lifetime",
+    "value": "Information",
+    "slotSetting": false
+  },
+  {
+    "name": "Azure__Pat",
+    "value": "****************************************************",
+    "slotSetting": false
+  },
+  {
+    "name": "Azure__Uri",
+    "value": "https://dev.azure.com/*****",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Type",
+    "value": "Task",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__0__IfChildState",
+    "value": "To Do",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__0__NotParentStates__0",
+    "value": "Done",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__0__NotParentStates__1",
+    "value": "Removed",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__0__SetParentStateTo",
+    "value": "New",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__0__AllChildren",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__1__IfChildState",
+    "value": "In Progress",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__1__NotParentStates__0",
+    "value": "Done",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__1__NotParentStates__1",
+    "value": "Removed",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__1__SetParentStateTo",
+    "value": "Committed",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__1__AllChildren",
+    "value": "false",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__2__IfChildState",
+    "value": "Done",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__2__NotParentStates__0",
+    "value": "Removed",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__2__SetParentStateTo",
+    "value": "Done",
+    "slotSetting": false
+  },
+  {
+    "name": "Rules__Rules__2__AllChildren",
+    "value": "true",
+    "slotSetting": false
+  }
+]
 ```
