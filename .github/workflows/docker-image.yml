@@ -1,9 +1,11 @@
 name: Docker Image CI
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ master ]
+    branches-ignore:
+      - '**'
+    tags:
+      - '*.*.*'
 
 jobs:
 
@@ -13,6 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
     
     - name: Login to DockerHub
       uses: docker/login-action@v1
@@ -25,4 +30,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: lorenzoscebba/azure-boards-pbi-autorule:latest
+        tags: lorenzoscebba/azure-boards-pbi-autorule:latest,lorenzoscebba/azure-boards-pbi-autorule:${{ env.RELEASE_VERSION }}
