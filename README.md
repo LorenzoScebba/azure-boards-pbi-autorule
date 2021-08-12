@@ -48,10 +48,8 @@ necessary that all childrens are `In Progress` (`AllChildren`)
 
 Use the env variables declared in the env.list file (env.example.list):
 
-*lorenzoscebba.azurecr.io/azure-boards-pbi-autorule:latest is a private repo, build your own image ;)*
-
 ```bash
-docker run --env-file env.list lorenzoscebba.azurecr.io/azure-boards-pbi-autorule:latest
+docker run --env-file env.list lorenzoscebba/azure-boards-pbi-autorule:latest
 ```
 
 ```json
