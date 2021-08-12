@@ -135,11 +135,10 @@ namespace azure_boards_pbi_autorule.Controllers
             var children =
                 parentWorkItem.Relations.Where(x =>
                     x.Rel.Equals("System.LinkTypes.Hierarchy-Forward"));
-            IList<int> ids = new List<int>();
-
+            
             // loop through children and extract the id's the from the url
-            foreach (var child in children) ids.Add(AzureUtils.GetWorkItemIdFromUrl(child.Url));
-
+            IList<int> ids = children.Select(child => AzureUtils.GetWorkItemIdFromUrl(child.Url)).ToList();
+            
             // in this case we only care about the state of the child work items
             string[] fields = { "System.State" };
 
