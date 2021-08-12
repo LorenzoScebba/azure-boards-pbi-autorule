@@ -25,4 +25,4 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: lorenzoscebba/azure-boards-pbi-autorule:$(date +%s)
+        tags: lorenzoscebba/azure-boards-pbi-autorule:latest
