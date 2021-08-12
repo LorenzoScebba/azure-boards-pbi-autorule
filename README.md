@@ -1,5 +1,40 @@
 # azure-boards-pbi-autorule
 
+## Wait what is this?
+
+This ~~demonic creation~~ project should help users of azure boards to automatically
+move PBIs to a particular state based on task updates.
+
+Each rule can be customized and consists of 4 main variables:
+
+```json
+{
+  "IfChildState": "In Progress",
+  "NotParentStates": [ "Done", "Removed" ],
+  "SetParentStateTo": "Committed",
+  "AllChildren": false
+}
+```
+
+The above rule is triggered each time a task moves from any state to `In Progress` (`IfChildState`),
+the rule also checks that the parent state is not `Done` or `Removed` (`NotParentState`) and if that's the case
+it modifies the parent state to `Committed` (`SetParentStateTo`). For this rule to work it is not
+necessary that all childrens are `In Progress` (`AllChildren`)
+
+## How to configure it
+
+- Create a new Service Hook in azure devops of type `Web Hook`
+- The trigger should be `Work item updated`
+  - Area Path: `[Any]` or a specific area path based on your needs
+  - Work item type: `Task`
+  - Tag: Leave it empty or fill it based  on your needs
+  - Field: `State`
+- Url: `https://<URL_OF_SERVICE>/api/receive`
+
+---
+
+## How to run it
+
 ### How to run in local env:
 
 - Copy and paste the appsettings.sample.json file and rename it to appsettings.json
