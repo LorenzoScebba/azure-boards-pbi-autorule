@@ -19,9 +19,9 @@ namespace azure_boards_pbi_autorule.Controllers
     {
         private readonly WorkItemTrackingHttpClient _client;
         private readonly ILogger<IndexController> _logger;
-        private readonly RulesModel _rules;
+        private readonly RuleConfiguration _rules;
 
-        public IndexController(WorkItemTrackingHttpClient client, ILogger<IndexController> logger, RulesModel rules)
+        public IndexController(WorkItemTrackingHttpClient client, ILogger<IndexController> logger, RuleConfiguration rules)
         {
             _client = client;
             _logger = logger;

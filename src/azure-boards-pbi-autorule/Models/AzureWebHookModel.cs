@@ -1,7 +1,9 @@
 ﻿namespace azure_boards_pbi_autorule.Models
 {
-    public class PayloadViewModel : BaseViewModel
+    public class AzureWebHookModel
     {
+        public string organization { get; set; }
+        public string pat { get; set; }
         public int workItemId { get; set; }
         public string workItemType { get; set; }
         public int parentId { get; set; }
