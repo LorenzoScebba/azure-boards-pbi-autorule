@@ -1,7 +1,7 @@
 # Wait what is this?
 
-This ~~demonic creation~~ project should help users of azure boards to automatically move a PBI parent to a particular state
-based on the pbi state updates.
+This ~~demonic creation~~ project should help users of azure boards to automatically move a PBI parent to a particular
+state based on the pbi state updates.
 
 Each rule can be customized and consists of 4 main variables:
 
@@ -17,12 +17,15 @@ Each rule can be customized and consists of 4 main variables:
 }
 ```
 
-The above rule is triggered each time a task moves from any state to `In Progress` (`IfChildState`), the rule also
-checks that the parent state is not `Done` or `Removed` (`NotParentState`) and if that's the case it modifies the parent
-state to `Committed` (`SetParentStateTo`). For this rule to work it is not necessary that all childrens
-are `In Progress` (`AllChildren`)
+The above rule is triggered each time a task moves from any state to **In Progress** (`IfChildState`), the rule also
+checks that the parent state is not **Done** or **Removed** (`NotParentState`) and if that's the case it modifies the
+parent state to **Committed** (`SetParentStateTo`). For this rule to work it is not necessary that all childrens are **
+In Progress** (`AllChildren`)
 
 ## How to configure it
+
+<details>
+  <summary>Expand</summary>
 
 - Create a new Service Hook in azure devops of type `Web Hook`
 - The trigger should be `Work item updated`
@@ -32,7 +35,7 @@ are `In Progress` (`AllChildren`)
     - Field: `State`
 - Url: `https://<URL_OF_SERVICE>/api/receive`
 
----
+</details>
 
 ## How to run it
 
@@ -52,11 +55,15 @@ are `In Progress` (`AllChildren`)
 
 ### How to run in docker env:
 
+<details>
+<summary>Expand</summary>
+
 Duplicate the file env.example.list and rename it to env.list, fill out the Azure Vars and run:
 
 ```bash
 docker run --env-file env.list -p 5000:80 lorenzoscebba/azure-boards-pbi-autorule:latest
 ```
+
 <details>
   <summary>Reference variables</summary>
 
@@ -84,6 +91,7 @@ docker run --env-file env.list -p 5000:80 lorenzoscebba/azure-boards-pbi-autorul
   "Rules__Rules__2__AllChildren": true
 }
 ```
+
 </details>
 
 <details>
@@ -193,4 +201,6 @@ docker run --env-file env.list -p 5000:80 lorenzoscebba/azure-boards-pbi-autorul
   }
 ]
 ```
+
+</details>
 </details>
