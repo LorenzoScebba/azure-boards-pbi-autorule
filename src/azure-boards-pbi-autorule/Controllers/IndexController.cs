@@ -33,26 +33,42 @@ namespace azure_boards_pbi_autorule.Controllers
             _logger.Log(LogLevel.Information, $"Received work item with id {vm.workItemId}");
 
             if (vm.eventType != "workitem.updated")
-                return UnprocessableEntity("Event type is not workitem.updated");
-            
+            {
+                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+                Response.Headers.Add("x-autorule-info", "Event type is not workitem.updated");
+                return Ok();
+            }
+
             var workItem = await _client.GetWorkItemAsync(vm.workItemId, null, null, WorkItemExpand.Relations);
 
             if (workItem == null)
-                return NotFound($"Workitem with id {vm.workItemId} not found");
-            
+            {
+                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+                Response.Headers.Add("x-autorule-info", $"Workitem with id '{vm.workItemId}' not found");
+                return Ok();
+            }
+
             var parentRelation = workItem.Relations.FirstOrDefault(x => x.Rel.Equals("System.LinkTypes.Hierarchy-Reverse"));
 
             if (parentRelation == null)
-                return Ok("No parent found, workitem is not a task");
-            
+            {
+                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+                Response.Headers.Add("x-autorule-info", $"No parent found for work item '{vm.workItemId}'");
+                return Ok();
+            }
+
             var parentId = AzureUtils.GetWorkItemIdFromUrl(parentRelation.Url);
             
             var parentWorkItem = await _client.GetWorkItemAsync(parentId, null, null, WorkItemExpand.Relations);
-            
+
             if (parentWorkItem == null)
-                return NotFound($"Parent work item with id {parentId} not found");
-            
-            _logger.Log(LogLevel.Information, $"Found parent work item with id {parentId}");
+            {
+                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+                Response.Headers.Add("x-autorule-info", $"Parent work item with id '{parentId}' not found");
+                return Ok($"Parent work item with id {parentId} not found");
+            }
+
+            _logger.Log(LogLevel.Information, $"Found parent work item with id {parentWorkItem.Id}");
 
             var result = await _rulesApplierService.ApplyRules(vm, parentWorkItem);
 
