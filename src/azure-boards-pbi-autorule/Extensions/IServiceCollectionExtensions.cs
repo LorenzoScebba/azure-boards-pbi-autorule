@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using azure_boards_pbi_autorule.Models;
+using azure_boards_pbi_autorule.Services;
+using azure_boards_pbi_autorule.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
@@ -11,6 +13,13 @@ namespace azure_boards_pbi_autorule.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void AddServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IWorkItemTrackingHttpClientService, WorkItemTrackingHttpClientService>();
+            services.AddSingleton<IWorkItemsService, WorkItemsService>();
+            services.AddSingleton<IRulesApplierService, RulesApplierService>();
+        }
+        
         public static void AddVss(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton(new HttpClient());

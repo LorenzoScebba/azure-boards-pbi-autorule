@@ -30,6 +30,7 @@ namespace azure_boards_pbi_autorule
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "azure_boards_pbi_autorule", Version = "v1" });
             });
             
+            services.AddServices();
             services.AddVss(Configuration);
         }
 
