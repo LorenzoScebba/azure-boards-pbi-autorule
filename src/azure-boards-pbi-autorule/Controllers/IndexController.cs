@@ -2,10 +2,10 @@ using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using azure_boards_pbi_autorule.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace azure_boards_pbi_autorule.Controllers
 {
@@ -14,13 +14,11 @@ namespace azure_boards_pbi_autorule.Controllers
     {
         private readonly IWorkItemsService _client;
         private readonly IRulesApplierService _rulesApplierService;
-        private readonly ILogger<IndexController> _logger;
 
-        public IndexController(IWorkItemsService client, IRulesApplierService rulesApplierService, ILogger<IndexController> logger)
+        public IndexController(IWorkItemsService client, IRulesApplierService rulesApplierService)
         {
             _client = client;
             _rulesApplierService = rulesApplierService;
-            _logger = logger;
         }
         
         [HttpPost("receive")]
@@ -28,7 +26,7 @@ namespace azure_boards_pbi_autorule.Controllers
         {
             var vm = AzureUtils.BuildPayloadViewModel(payload);
             
-            _logger.Log(LogLevel.Information, $"Received work item with id {vm.workItemId}");
+            Log.Debug("Received work item with id '{id}'", vm.workItemId);
 
             if (vm.eventType != "workitem.updated")
             {
@@ -46,7 +44,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 return Ok($"Parent work item with id '{vm.parentId}' not found");
             }
 
-            _logger.Log(LogLevel.Information, $"Found parent work item with id {parentWorkItem.Id}");
+            Log.Debug("Found parent work item with id '{id}'", parentWorkItem.Id);
 
             var result = await _rulesApplierService.ApplyRules(vm, parentWorkItem);
 
@@ -57,7 +55,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 return Ok(result.Message);
             }
             
-            _logger.Log(LogLevel.Information, $"No rule matched for parent '{vm.parentId}'");
+            Log.Information("No rule matched for parent '{id}'", vm.parentId);
             
             Response.Headers.Add("x-autorule-info", result.Message);
             return Ok(result.Message);

@@ -4,6 +4,7 @@ using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
+using Serilog;
 
 namespace azure_boards_pbi_autorule.Services
 {
@@ -11,14 +12,11 @@ namespace azure_boards_pbi_autorule.Services
     {
         private readonly IWorkItemsService _client;
         private readonly RuleConfiguration _rules;
-        private readonly ILogger<RulesApplierService> _logger;
 
-        public RulesApplierService(IWorkItemsService client, RuleConfiguration rules,
-            ILogger<RulesApplierService> logger)
+        public RulesApplierService(IWorkItemsService client, RuleConfiguration rules)
         {
             _client = client;
             _rules = rules;
-            _logger = logger;
         }
 
         public async Task<RuleResult> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
@@ -38,8 +36,7 @@ namespace azure_boards_pbi_autorule.Services
                     {
                         if (!rule.NotParentStates.Contains(parentState))
                         {
-                            _logger.Log(LogLevel.Information,
-                                $"Updating '{parentWorkItem.Id}' with {rule.SetParentStateTo}");
+                            Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
                             await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
                             return new RuleResult
@@ -58,8 +55,7 @@ namespace azure_boards_pbi_autorule.Services
 
                         if (count.Equals(0))
                         {
-                            _logger.Log(LogLevel.Information,
-                                $"Updating '{parentWorkItem.Id}' with {rule.SetParentStateTo}");
+                            Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
                             await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
                             return new RuleResult
