@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Threading.Tasks;
-using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using azure_boards_pbi_autorule.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -39,33 +37,13 @@ namespace azure_boards_pbi_autorule.Controllers
                 return Ok("Event type is not workitem.updated");
             }
 
-            var workItem = await _client.GetWorkItemAsync(vm.workItemId, null, null, WorkItemExpand.Relations);
-
-            if (workItem == null)
-            {
-                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
-                Response.Headers.Add("x-autorule-info", $"Workitem with id '{vm.workItemId}' not found");
-                return Ok($"Workitem with id '{vm.workItemId}' not found");
-            }
-
-            var parentRelation = workItem.Relations.FirstOrDefault(x => x.Rel.Equals("System.LinkTypes.Hierarchy-Reverse"));
-
-            if (parentRelation == null)
-            {
-                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
-                Response.Headers.Add("x-autorule-info", $"No parent found for work item '{vm.workItemId}'");
-                return Ok($"No parent found for work item '{vm.workItemId}'");
-            }
-
-            var parentId = AzureUtils.GetWorkItemIdFromUrl(parentRelation.Url);
-            
-            var parentWorkItem = await _client.GetWorkItemAsync(parentId, null, null, WorkItemExpand.Relations);
+            var parentWorkItem = await _client.GetWorkItemAsync(vm.parentId, null, null, WorkItemExpand.Relations);
 
             if (parentWorkItem == null)
             {
                 Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
-                Response.Headers.Add("x-autorule-info", $"Parent work item with id '{parentId}' not found");
-                return Ok($"Parent work item with id '{parentId}' not found");
+                Response.Headers.Add("x-autorule-info", $"Parent work item with id '{vm.parentId}' not found");
+                return Ok($"Parent work item with id '{vm.parentId}' not found");
             }
 
             _logger.Log(LogLevel.Information, $"Found parent work item with id {parentWorkItem.Id}");
@@ -79,7 +57,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 return Ok(result.Message);
             }
             
-            _logger.Log(LogLevel.Information, $"No rule matched for parent '{parentId}'");
+            _logger.Log(LogLevel.Information, $"No rule matched for parent '{vm.parentId}'");
             
             Response.Headers.Add("x-autorule-info", result.Message);
             return Ok(result.Message);

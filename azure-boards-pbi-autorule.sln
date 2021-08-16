@@ -13,6 +13,10 @@ ProjectSection(SolutionItems) = preProject
 	env.example.list = env.example.list
 EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{376B601F-456F-4A8F-84F7-E1EA0BC6FE28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "azure-boards-pbi-autorule-tests", "tests\azure-boards-pbi-autorule-tests\azure-boards-pbi-autorule-tests.csproj", "{6C3375B9-82A5-4F18-B0FF-D120B2398EF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,11 +24,16 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9BEEBE86-F8EB-44ED-833D-9EA340A36C63} = {E174FDE8-63AA-4183-9121-6A4946DB4878}
+		{6C3375B9-82A5-4F18-B0FF-D120B2398EF4} = {376B601F-456F-4A8F-84F7-E1EA0BC6FE28}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9BEEBE86-F8EB-44ED-833D-9EA340A36C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BEEBE86-F8EB-44ED-833D-9EA340A36C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BEEBE86-F8EB-44ED-833D-9EA340A36C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BEEBE86-F8EB-44ED-833D-9EA340A36C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3375B9-82A5-4F18-B0FF-D120B2398EF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3375B9-82A5-4F18-B0FF-D120B2398EF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3375B9-82A5-4F18-B0FF-D120B2398EF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3375B9-82A5-4F18-B0FF-D120B2398EF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
