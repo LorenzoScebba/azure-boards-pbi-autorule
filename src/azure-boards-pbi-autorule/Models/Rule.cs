@@ -1,12 +1,5 @@
-namespace azure_boards_pbi_autorule.Models
+﻿namespace azure_boards_pbi_autorule.Models
 {
-    public class RulesModel
-    {
-        public string Type { get; set; }
-
-        public Rule[] Rules { get; set; }
-    }
-
     public class Rule
     {
         public string IfChildState { get; set; }
