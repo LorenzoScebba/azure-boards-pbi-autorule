@@ -69,9 +69,6 @@ docker run --env-file env.list -p 5000:80 lorenzoscebba/azure-boards-pbi-autorul
 
 ```json
 {
-  "Logging__LogLevel__Default": "Information",
-  "Logging__LogLevel__Microsoft": "Warning",
-  "Logging__LogLevel__Microsoft.Hosting.Lifetime": "Information",
   "Azure__Pat": "****************************************************",
   "Azure__Uri": "https://dev.azure.com/*****",
   "Rules__Type": "Task",
@@ -99,21 +96,6 @@ docker run --env-file env.list -p 5000:80 lorenzoscebba/azure-boards-pbi-autorul
 
 ```json
 [
-  {
-    "name": "Logging__LogLevel__Default",
-    "value": "Information",
-    "slotSetting": false
-  },
-  {
-    "name": "Logging__LogLevel__Microsoft",
-    "value": "Warning",
-    "slotSetting": false
-  },
-  {
-    "name": "Logging__LogLevel__Microsoft.Hosting.Lifetime",
-    "value": "Information",
-    "slotSetting": false
-  },
   {
     "name": "Azure__Pat",
     "value": "****************************************************",
