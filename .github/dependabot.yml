@@ -3,12 +3,9 @@
 # Please see the documentation for all configuration options:
 # https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
-on:
-  workflow_dispatch:
-
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/" # Location of package manifests
+    directory: "/"
     schedule:
       interval: "daily"
