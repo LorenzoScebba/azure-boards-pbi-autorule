@@ -1,3 +1,6 @@
+[![.NET](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/dotnet-test.yml/badge.svg)](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/dotnet-test.yml)
+[![Docker Image CI](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/docker-image.yml/badge.svg)](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/docker-image.yml)
+
 # Wait what is this?
 
 This ~~demonic creation~~ project should help users of azure boards to automatically move a PBI parent to a particular
