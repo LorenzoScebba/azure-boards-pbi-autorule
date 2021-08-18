@@ -55,8 +55,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 return Ok(result.Message);
             }
             
-            Log.Information("No rule matched for parent '{id}'", vm.parentId);
-            
+            Log.Information(result.Message);
             Response.Headers.Add("x-autorule-info", result.Message);
             return Ok(result.Message);
         }

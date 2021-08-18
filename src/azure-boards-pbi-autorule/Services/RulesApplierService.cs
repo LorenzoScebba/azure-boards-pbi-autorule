@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Serilog;
 
@@ -38,13 +40,25 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
-                            await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                            return new RuleResult
+                            try
                             {
-                                Message = $"Parent updated with {rule.SetParentStateTo}",
-                                Modified = true,
-                                MatchedRule = rule
-                            };
+                                await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                return new RuleResult
+                                {
+                                    Message = $"Parent updated with {rule.SetParentStateTo}",
+                                    Modified = true,
+                                    MatchedRule = rule
+                                };
+                            }
+                            catch (RuleValidationException e)
+                            {
+                                return new RuleResult
+                                {
+                                    Message = $"A rule validation exception occurred, please review the rule. Error was {e.Message}",
+                                    Modified = false,
+                                    MatchedRule = rule
+                                };
+                            }
                         }
                     }
                     else
@@ -57,13 +71,25 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
-                            await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                            return new RuleResult
+                            try
                             {
-                                Message = $"Parent updated with {rule.SetParentStateTo}",
-                                Modified = true,
-                                MatchedRule = rule
-                            };
+                                await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                return new RuleResult
+                                {
+                                    Message = $"Parent updated with {rule.SetParentStateTo}",
+                                    Modified = true,
+                                    MatchedRule = rule
+                                };
+                            }
+                            catch (RuleValidationException e)
+                            {
+                                return new RuleResult
+                                {
+                                    Message = $"A rule validation exception occurred, please review the rule. Error was {e.Message}",
+                                    Modified = false,
+                                    MatchedRule = rule
+                                };
+                            }
                         }
                     }
                 }
