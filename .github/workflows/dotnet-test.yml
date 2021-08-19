@@ -1,4 +1,4 @@
-name: .NET
+name: .NET Unit Tests
 
 on:
   push:
@@ -7,10 +7,11 @@ on:
     branches: [ develop ]
 
 jobs:
-  build:
+  tests:
+    name: Run Tests
 
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET

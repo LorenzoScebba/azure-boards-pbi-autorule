@@ -14,6 +14,7 @@ ProjectSection(SolutionItems) = preProject
 	.github\workflows\codeql-analysis.yml = .github\workflows\codeql-analysis.yml
 	.github\workflows\docker-image.yml = .github\workflows\docker-image.yml
 	.github\dependabot.yml = .github\dependabot.yml
+	.github\workflows\dotnet-test.yml = .github\workflows\dotnet-test.yml
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{376B601F-456F-4A8F-84F7-E1EA0BC6FE28}"
