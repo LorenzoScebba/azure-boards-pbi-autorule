@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
-using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Serilog;
 
@@ -19,17 +20,16 @@ namespace azure_boards_pbi_autorule.Services
             _rules = rules;
         }
 
-        public async Task<RuleResult> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
+        public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
         {
             var parentState = parentWorkItem.Fields["System.State"] == null
                 ? string.Empty
                 : parentWorkItem.Fields["System.State"].ToString();
 
+            var childWorkItems = await _client.ListChildWorkItemsForParent(parentWorkItem);
+            
             foreach (var rule in _rules.Rules)
             {
-                var childWorkItems =
-                    await _client.ListChildWorkItemsForParent(parentWorkItem);
-
                 if (rule.IfChildState.Equals(vm.state))
                 {
                     if (!rule.AllChildren)
@@ -38,13 +38,15 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
-                            await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                            return new RuleResult
+                            try
                             {
-                                Message = $"Parent updated with {rule.SetParentStateTo}",
-                                Modified = true,
-                                MatchedRule = rule
-                            };
+                                await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                return Result<Rule, string>.Ok(rule);
+                            }
+                            catch (RuleValidationException e)
+                            {
+                                return Result<Rule, string>.Fail($"A rule validation exception occurred, please review the rule. Error was {e.Message}");
+                            }
                         }
                     }
                     else
@@ -57,23 +59,21 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             Log.Information("Updating '{id}' with {state}", parentWorkItem.Id, rule.SetParentStateTo);
 
-                            await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                            return new RuleResult
+                            try
                             {
-                                Message = $"Parent updated with {rule.SetParentStateTo}",
-                                Modified = true,
-                                MatchedRule = rule
-                            };
+                                await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                return Result<Rule, string>.Ok(rule);
+                            }
+                            catch (RuleValidationException e)
+                            {
+                                return Result<Rule, string>.Fail($"A rule validation exception occurred, please review the rule. Error was {e.Message}");
+                            }
                         }
                     }
                 }
             }
 
-            return new RuleResult
-            {
-                Message = "No rule matched",
-                Modified = false,
-            };
+            return Result<Rule, string>.Fail("No rule matched");
         }
     }
 }

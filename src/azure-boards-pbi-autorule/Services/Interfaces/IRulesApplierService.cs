@@ -6,6 +6,6 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
 {
     public interface IRulesApplierService
     {
-        Task<RuleResult> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem);
+        Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem);
     }
 }

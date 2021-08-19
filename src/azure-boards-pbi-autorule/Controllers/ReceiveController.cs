@@ -48,17 +48,17 @@ namespace azure_boards_pbi_autorule.Controllers
 
             var result = await _rulesApplierService.ApplyRules(vm, parentWorkItem);
 
-            if (result.Modified)
+            if (!result.HasError)
             {
-                Response.Headers.Add("x-autorule-info", result.Message);
-                Response.Headers.Add("x-autorule-match", JsonConvert.SerializeObject(result.MatchedRule));
-                return Ok(result.Message);
+                Response.Headers.Add("x-autorule-info", $"Parent updated with {result.Data.SetParentStateTo}");
+                Response.Headers.Add("x-autorule-match", JsonConvert.SerializeObject(result.Data));
+                return Ok($"Parent updated with {result.Data.SetParentStateTo}");
             }
             
-            Log.Information("No rule matched for parent '{id}'", vm.parentId);
-            
-            Response.Headers.Add("x-autorule-info", result.Message);
-            return Ok(result.Message);
+            Log.Information(result.Error);
+            Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+            Response.Headers.Add("x-autorule-info", result.Error);
+            return Ok(result.Error);
         }
     }
 }
