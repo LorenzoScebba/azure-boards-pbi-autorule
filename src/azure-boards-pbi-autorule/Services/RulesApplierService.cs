@@ -26,11 +26,10 @@ namespace azure_boards_pbi_autorule.Services
                 ? string.Empty
                 : parentWorkItem.Fields["System.State"].ToString();
 
+            var childWorkItems = await _client.ListChildWorkItemsForParent(parentWorkItem);
+            
             foreach (var rule in _rules.Rules)
             {
-                var childWorkItems =
-                    await _client.ListChildWorkItemsForParent(parentWorkItem);
-
                 if (rule.IfChildState.Equals(vm.state))
                 {
                     if (!rule.AllChildren)
