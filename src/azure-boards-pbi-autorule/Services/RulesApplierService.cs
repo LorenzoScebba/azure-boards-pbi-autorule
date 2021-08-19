@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Serilog;
@@ -21,7 +20,7 @@ namespace azure_boards_pbi_autorule.Services
             _rules = rules;
         }
 
-        public async Task<RuleResult> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
+        public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
         {
             var parentState = parentWorkItem.Fields["System.State"] == null
                 ? string.Empty
@@ -43,21 +42,11 @@ namespace azure_boards_pbi_autorule.Services
                             try
                             {
                                 await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                                return new RuleResult
-                                {
-                                    Message = $"Parent updated with {rule.SetParentStateTo}",
-                                    Modified = true,
-                                    MatchedRule = rule
-                                };
+                                return Result<Rule, string>.Ok(rule);
                             }
                             catch (RuleValidationException e)
                             {
-                                return new RuleResult
-                                {
-                                    Message = $"A rule validation exception occurred, please review the rule. Error was {e.Message}",
-                                    Modified = false,
-                                    MatchedRule = rule
-                                };
+                                return Result<Rule, string>.Fail($"A rule validation exception occurred, please review the rule. Error was {e.Message}");
                             }
                         }
                     }
@@ -74,32 +63,18 @@ namespace azure_boards_pbi_autorule.Services
                             try
                             {
                                 await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                                return new RuleResult
-                                {
-                                    Message = $"Parent updated with {rule.SetParentStateTo}",
-                                    Modified = true,
-                                    MatchedRule = rule
-                                };
+                                return Result<Rule, string>.Ok(rule);
                             }
                             catch (RuleValidationException e)
                             {
-                                return new RuleResult
-                                {
-                                    Message = $"A rule validation exception occurred, please review the rule. Error was {e.Message}",
-                                    Modified = false,
-                                    MatchedRule = rule
-                                };
+                                return Result<Rule, string>.Fail($"A rule validation exception occurred, please review the rule. Error was {e.Message}");
                             }
                         }
                     }
                 }
             }
 
-            return new RuleResult
-            {
-                Message = "No rule matched",
-                Modified = false,
-            };
+            return Result<Rule, string>.Fail("No rule matched");
         }
     }
 }

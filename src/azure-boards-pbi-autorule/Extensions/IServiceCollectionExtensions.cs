@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services;
 using azure_boards_pbi_autorule.Services.Interfaces;
