@@ -21,7 +21,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             var vm = new AzureWebHookModel
             {
                 state = "In Progress",
-                eventType = "wm.updated",
+                eventType = "workitem.updated",
                 parentId = 1,
                 workItemId = 2,
                 workItemType = "Task"
@@ -72,7 +72,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             var vm = new AzureWebHookModel
             {
                 state = "To Do",
-                eventType = "wm.updated",
+                eventType = "workitem.updated",
                 parentId = 1,
                 workItemId = 2,
                 workItemType = "Task"
@@ -123,7 +123,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             var vm = new AzureWebHookModel
             {
                 state = "To Do",
-                eventType = "wm.updated",
+                eventType = "workitem.updated",
                 parentId = 1,
                 workItemId = 2,
                 workItemType = "Task"
@@ -155,7 +155,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             var vm = new AzureWebHookModel
             {
                 state = "In Progress",
-                eventType = "wm.updated",
+                eventType = "workitem.updated",
                 parentId = 1,
                 workItemId = 2,
                 workItemType = "Task"
@@ -188,7 +188,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             var vm = new AzureWebHookModel
             {
                 state = "To Do",
-                eventType = "wm.updated",
+                eventType = "workitem.updated",
                 parentId = 1,
                 workItemId = 2,
                 workItemType = "Task"

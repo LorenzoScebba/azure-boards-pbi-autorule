@@ -56,6 +56,7 @@ namespace azure_boards_pbi_autorule.Controllers
             }
             
             Log.Information(result.Error);
+            Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
             Response.Headers.Add("x-autorule-info", result.Error);
             return Ok(result.Error);
         }

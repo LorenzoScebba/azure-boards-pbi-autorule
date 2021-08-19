@@ -18,8 +18,4 @@
       <ProjectReference Include="..\..\src\azure-boards-pbi-autorule\azure-boards-pbi-autorule.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers" />
-    </ItemGroup>
-
 </Project>
