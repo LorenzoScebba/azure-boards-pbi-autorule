@@ -11,14 +11,14 @@ namespace azure_boards_pbi_autorule.Utils
             return new AzureWebHookModel
             {
                 eventType = body["eventType"]?.ToString(),
-                
+
                 workItemId = body["resource"]["workItemId"] == null
                     ? -1
                     : Convert.ToInt32(body["resource"]["workItemId"].ToString()),
                 parentId = body["resource"]["revision"]?["fields"]?["System.Parent"] == null
                     ? -1
                     : Convert.ToInt32(body["resource"]["revision"]?["fields"]?["System.Parent"]),
-                
+
                 workItemType = body["resource"]["revision"]?["fields"]?["System.WorkItemType"]?.ToString(),
                 state = body["resource"]["fields"]?["System.State"]?["newValue"]?.ToString()
             };

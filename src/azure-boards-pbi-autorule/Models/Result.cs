@@ -12,17 +12,17 @@
             {
                 Data = data,
                 Error = default,
-                HasError = false,
+                HasError = false
             };
         }
-        
+
         public static Result<T, TE> Fail(TE error)
         {
             return new Result<T, TE>
             {
                 Data = default,
                 Error = error,
-                HasError = true,
+                HasError = true
             };
         }
     }

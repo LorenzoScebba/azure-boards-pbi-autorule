@@ -19,7 +19,7 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
             IEnumerable<string> fields = null);
 
         Task<WorkItem> UpdateWorkItemAsync(
-            JsonPatchDocument document, 
+            JsonPatchDocument document,
             int id);
     }
 }

@@ -1,0 +1,4 @@
+env.list
+.github
+.idea
+src/azure-boards-pbi-autorule/appsettings.json

@@ -1,4 +1,5 @@
 using azure_boards_pbi_autorule.Extensions;
+using azure_boards_pbi_autorule.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +30,7 @@ namespace azure_boards_pbi_autorule
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "azure_boards_pbi_autorule", Version = "v1" });
             });
-            
+
             services.AddServices();
             services.AddVss(Configuration);
         }
@@ -43,7 +44,9 @@ namespace azure_boards_pbi_autorule
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "azure_boards_pbi_autorule v1"));
             }
-            
+
+            app.UseMiddleware<RequestLogContextMiddleware>();
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
