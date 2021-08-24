@@ -22,7 +22,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static object SampleJObject = new
+        public static readonly object SampleJObject = new
         {
             eventType = "workitem.updated",
             resource = new
@@ -36,7 +36,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
         
-        public static object SampleJObjectWithWrongEventType = new
+        public static readonly object SampleJObjectWithWrongEventType = new
         {
             eventType = "workitem.notUpdated",
             resource = new
@@ -50,7 +50,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static RuleConfiguration SampleRules = new RuleConfiguration
+        public static readonly RuleConfiguration SampleTaskRules = new RuleConfiguration
         {
             Type = "Task",
             Rules = new[]
@@ -71,8 +71,30 @@ namespace azure_boards_pbi_autorule_tests
                 }
             }
         };
+        
+        public static readonly RuleConfiguration SampleProductBacklogItemRules = new RuleConfiguration
+        {
+            Type = "Product Backlog Item",
+            Rules = new[]
+            {
+                new Rule
+                {
+                    IfChildState = "New",
+                    NotParentStates = new[] { "Done", "Removed" },
+                    SetParentStateTo = "New",
+                    AllChildren = true
+                },
+                new Rule
+                {
+                    IfChildState = "Committed",
+                    NotParentStates = new[] { "Done", "Removed" },
+                    SetParentStateTo = "Committed",
+                    AllChildren = false
+                }
+            }
+        };
 
-        public static RuleConfiguration SampleRulesWithWrongSetParentStateTo = new RuleConfiguration
+        public static readonly RuleConfiguration SampleInvalidTaskRules = new RuleConfiguration
         {
             Type = "Task",
             Rules = new[]

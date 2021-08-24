@@ -17,7 +17,8 @@ namespace azure_boards_pbi_autorule_tests.Services
         public async Task ApplyRules_ToCommitted()
         {
             var workItemsService = new Mock<IWorkItemsService>();
-            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleTaskRules });
 
             var vm = new AzureWebHookModel
             {
@@ -38,11 +39,73 @@ namespace azure_boards_pbi_autorule_tests.Services
             };
 
             var result = await service.ApplyRules(vm, parent);
-            
+
             Assert.IsFalse(result.HasError);
-            Assert.AreEqual(TestUtils.SampleRules.Rules[1], result.Data);
+            Assert.AreEqual(TestUtils.SampleTaskRules.Rules[1], result.Data);
+        }
+
+        [Test]
+        public async Task ApplyRules_MultipleRules_ToCommittedTask()
+        {
+            var workItemsService = new Mock<IWorkItemsService>();
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleProductBacklogItemRules, TestUtils.SampleTaskRules });
+
+            var vm = new AzureWebHookModel
+            {
+                state = "In Progress",
+                eventType = "workitem.updated",
+                parentId = 1,
+                workItemId = 2,
+                workItemType = "Task"
+            };
+
+            var parent = new WorkItem
+            {
+                Id = 1,
+                Fields = new Dictionary<string, object>
+                {
+                    { "System.State", "New" }
+                }
+            };
+
+            var result = await service.ApplyRules(vm, parent);
+
+            Assert.IsFalse(result.HasError);
+            Assert.AreEqual(TestUtils.SampleTaskRules.Rules[1], result.Data);
         }
         
+        [Test]
+        public async Task ApplyRules_MultipleRules_ToCommittedPBI()
+        {
+            var workItemsService = new Mock<IWorkItemsService>();
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleProductBacklogItemRules, TestUtils.SampleTaskRules });
+
+            var vm = new AzureWebHookModel
+            {
+                state = "Committed",
+                eventType = "workitem.updated",
+                parentId = 1,
+                workItemId = 2,
+                workItemType = "Product Backlog Item"
+            };
+
+            var parent = new WorkItem
+            {
+                Id = 1,
+                Fields = new Dictionary<string, object>
+                {
+                    { "System.State", "New" }
+                }
+            };
+
+            var result = await service.ApplyRules(vm, parent);
+
+            Assert.IsFalse(result.HasError);
+            Assert.AreEqual(TestUtils.SampleProductBacklogItemRules.Rules[1], result.Data);
+        }
+
         [Test]
         public async Task ApplyRules_ToNew()
         {
@@ -63,12 +126,13 @@ namespace azure_boards_pbi_autorule_tests.Services
                     }
                 }
             };
-            
+
             var workItemsService = new Mock<IWorkItemsService>();
             workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
                 .ReturnsAsync(workItemsRelated);
-                
-            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
+
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleTaskRules });
 
             var vm = new AzureWebHookModel
             {
@@ -89,11 +153,11 @@ namespace azure_boards_pbi_autorule_tests.Services
             };
 
             var result = await service.ApplyRules(vm, parent);
-            
+
             Assert.IsFalse(result.HasError);
-            Assert.AreEqual(TestUtils.SampleRules.Rules[0], result.Data);
+            Assert.AreEqual(TestUtils.SampleTaskRules.Rules[0], result.Data);
         }
-        
+
         [Test]
         public async Task ApplyRules_ToNew_OneStillInCommitted()
         {
@@ -114,12 +178,13 @@ namespace azure_boards_pbi_autorule_tests.Services
                     }
                 }
             };
-            
+
             var workItemsService = new Mock<IWorkItemsService>();
             workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
                 .ReturnsAsync(workItemsRelated);
-                
-            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
+
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleTaskRules });
 
             var vm = new AzureWebHookModel
             {
@@ -140,18 +205,19 @@ namespace azure_boards_pbi_autorule_tests.Services
             };
 
             var result = await service.ApplyRules(vm, parent);
-            
+
             Assert.IsTrue(result.HasError);
         }
-        
+
         [Test]
         public async Task ApplyRules_WrongConfiguration_AnyChild()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             workItemsService.Setup(x => x.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
                 .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
-            
-            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRulesWithWrongSetParentStateTo });
+
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleInvalidTaskRules });
 
             var vm = new AzureWebHookModel
             {
@@ -172,19 +238,20 @@ namespace azure_boards_pbi_autorule_tests.Services
             };
 
             var result = await service.ApplyRules(vm, parent);
-            
+
             Assert.IsTrue(result.HasError);
             StringAssert.Contains("Sample Rule Validation Exception Message", result.Error);
         }
-        
+
         [Test]
         public async Task ApplyRules_WrongConfiguration_AllChild()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             workItemsService.Setup(x => x.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
                 .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
-            
-            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRulesWithWrongSetParentStateTo });
+
+            var service = new RulesApplierService(workItemsService.Object,
+                new List<RuleConfiguration> { TestUtils.SampleInvalidTaskRules });
 
             var vm = new AzureWebHookModel
             {
@@ -205,7 +272,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             };
 
             var result = await service.ApplyRules(vm, parent);
-            
+
             Assert.IsTrue(result.HasError);
             StringAssert.Contains("Sample Rule Validation Exception Message", result.Error);
         }
