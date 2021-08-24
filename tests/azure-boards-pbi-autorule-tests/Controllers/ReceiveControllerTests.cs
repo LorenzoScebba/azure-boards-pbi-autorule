@@ -61,7 +61,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObjectWithWrongEventType));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.False(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
+            Assert.AreEqual("Event type is not workitem.updated", controller.Response.Headers["x-autorule-info"].ToString());
         }
         
         [Test]
@@ -70,6 +70,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
+            rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
             workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
                 .ReturnsAsync((WorkItem)null);
             
@@ -84,7 +85,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.False(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
+            StringAssert.Contains("Parent work item with id", controller.Response.Headers["x-autorule-info"].ToString());
         }
 
         [Test]
@@ -114,7 +115,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.False(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
+            StringAssert.Contains("No rule is configured for type", controller.Response.Headers["x-autorule-info"].ToString());
         }
     }
 }
