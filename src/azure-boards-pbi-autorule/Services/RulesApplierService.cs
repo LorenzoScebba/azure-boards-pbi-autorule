@@ -51,7 +51,7 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             if (!rule.NotParentStates.Contains(parentWorkItem.GetWorkItemField("System.State")))
                             {
-                                Log.Information("Updating {type} '{id}' with {state}",
+                                Log.Information("Updating {type} '#{id}' with {state}",
                                     parentWorkItem.GetWorkItemField("System.WorkItemType"),
                                     parentWorkItem.Id,
                                     rule.SetParentStateTo);
@@ -77,7 +77,7 @@ namespace azure_boards_pbi_autorule.Services
 
                             if (count.Equals(0))
                             {
-                                Log.Information("Updating {type} '{id}' with {state}", 
+                                Log.Information("Updating {type} '#{id}' with {state}", 
                                     parentWorkItem.GetWorkItemField("System.WorkItemType"),
                                     parentWorkItem.Id,
                                     rule.SetParentStateTo);
