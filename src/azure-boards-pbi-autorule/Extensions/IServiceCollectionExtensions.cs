@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
@@ -26,7 +27,7 @@ namespace azure_boards_pbi_autorule.Extensions
             services.AddSingleton(new HttpClient());
 
             var config = configuration.GetSection("Azure").Get<AzureConfiguration>();
-            var rules = configuration.GetSection("Rules").Get<RuleConfiguration>();
+            var rules = configuration.GetSection("Rules").Get<IEnumerable<RuleConfiguration>>();
             services.AddSingleton(rules);
 
             var creds = new VssBasicCredential(string.Empty, config.Pat);

@@ -27,18 +27,32 @@ namespace azure_boards_pbi_autorule.Services
             DateTime? asOf = null,
             WorkItemExpand? expand = null)
         {
-            return await _client.GetWorkItemAsync(id, fields, asOf, expand);
+            try
+            {
+                return await _client.GetWorkItemAsync(id, fields, asOf, expand);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<WorkItem>> ListChildWorkItemsForParent(WorkItem parentWorkItem)
         {
-            var children =
-                parentWorkItem.Relations.Where(x =>
-                    x.Rel.Equals("System.LinkTypes.Hierarchy-Forward"));
+            try
+            {
+                var children =
+                    parentWorkItem.Relations.Where(x =>
+                        x.Rel.Equals("System.LinkTypes.Hierarchy-Forward"));
 
-            IList<int> ids = children.Select(child => AzureUtils.GetWorkItemIdFromUrl(child.Url)).ToList();
+                IList<int> ids = children.Select(child => AzureUtils.GetWorkItemIdFromUrl(child.Url)).ToList();
 
-            return await _client.GetWorkItemsAsync(ids, new[] { "System.State" });
+                return await _client.GetWorkItemsAsync(ids, new[] { "System.State" });
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<WorkItem> UpdateWorkItemState(WorkItem workItem, string state)

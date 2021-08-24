@@ -22,8 +22,8 @@ Each rule can be customized and consists of 4 main variables:
 
 The above rule is triggered each time a task moves from any state to **In Progress** (`IfChildState`), the rule also
 checks that the parent state is not **Done** or **Removed** (`NotParentState`) and if that's the case it modifies the
-parent state to **Committed** (`SetParentStateTo`). For this rule to work it is not necessary that all childrens are **
-In Progress** (`AllChildren`)
+parent state to **Committed** (`SetParentStateTo`). For this rule to work it is not necessary that all childrens are
+**In Progress** (`AllChildren`)
 
 ## How to configure it
 

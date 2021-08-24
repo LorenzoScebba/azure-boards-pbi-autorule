@@ -34,6 +34,13 @@ namespace azure_boards_pbi_autorule.Controllers
                 Response.Headers.Add("x-autorule-info", "Event type is not workitem.updated");
                 return Ok("Event type is not workitem.updated");
             }
+            
+            if (!_rulesApplierService.HasRuleForType(vm.workItemType))
+            {
+                Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
+                Response.Headers.Add("x-autorule-info", $"No rule is configured for type {vm.workItemType}");
+                return Ok($"No rule is configured for type {vm.workItemType}");
+            }
 
             var parentWorkItem = await _client.GetWorkItemAsync(vm.parentId, null, null, WorkItemExpand.Relations);
 
