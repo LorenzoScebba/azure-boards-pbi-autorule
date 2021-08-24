@@ -7,8 +7,6 @@ using azure_boards_pbi_autorule.Utils;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.WebApi.Patch;
 using Microsoft.VisualStudio.Services.WebApi.Patch.Json;
-using JsonPatchDocument = Microsoft.VisualStudio.Services.WebApi.Patch.Json.JsonPatchDocument;
-
 
 namespace azure_boards_pbi_autorule.Services
 {

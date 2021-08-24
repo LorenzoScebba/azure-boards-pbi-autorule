@@ -20,12 +20,12 @@ namespace azure_boards_pbi_autorule.Controllers
             _client = client;
             _rulesApplierService = rulesApplierService;
         }
-        
+
         [HttpPost("receive")]
         public async Task<IActionResult> Index([FromBody] JObject payload)
         {
             var vm = AzureUtils.BuildPayloadViewModel(payload);
-            
+
             Log.Debug("Received work item with id '{id}'", vm.workItemId);
 
             if (vm.eventType != "workitem.updated")
@@ -34,7 +34,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 Response.Headers.Add("x-autorule-info", "Event type is not workitem.updated");
                 return Ok("Event type is not workitem.updated");
             }
-            
+
             if (!_rulesApplierService.HasRuleForType(vm.workItemType))
             {
                 Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
@@ -61,7 +61,7 @@ namespace azure_boards_pbi_autorule.Controllers
                 Response.Headers.Add("x-autorule-match", JsonConvert.SerializeObject(result.Data));
                 return Ok($"Parent updated with {result.Data.SetParentStateTo}");
             }
-            
+
             Log.Information(result.Error);
             Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
             Response.Headers.Add("x-autorule-info", result.Error);

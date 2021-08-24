@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Serilog.Context;
 using shortid;
@@ -22,9 +21,9 @@ namespace azure_boards_pbi_autorule.Middlewares
             {
                 Length = 8,
                 UseNumbers = false,
-                UseSpecialCharacters = false,
+                UseSpecialCharacters = false
             };
-            
+
             using (LogContext.PushProperty("CorrelationId", ShortId.Generate(opt)))
             {
                 return _next.Invoke(context);

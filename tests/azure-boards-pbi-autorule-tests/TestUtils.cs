@@ -6,13 +6,13 @@ namespace azure_boards_pbi_autorule_tests
 {
     public static class TestUtils
     {
-        private static readonly object SampleRevisionFields = new Dictionary<string, object>()
+        private static readonly object SampleRevisionFields = new Dictionary<string, object>
         {
             { "System.Parent", "1" },
             { "System.WorkItemType", "Task" }
         };
 
-        private static readonly object SampleFields = new Dictionary<string, object>()
+        private static readonly object SampleFields = new Dictionary<string, object>
         {
             {
                 "System.State", new
@@ -35,7 +35,7 @@ namespace azure_boards_pbi_autorule_tests
                 fields = SampleFields
             }
         };
-        
+
         public static readonly object SampleJObjectWithWrongEventType = new
         {
             eventType = "workitem.notUpdated",
@@ -71,7 +71,7 @@ namespace azure_boards_pbi_autorule_tests
                 }
             }
         };
-        
+
         public static readonly RuleConfiguration SampleProductBacklogItemRules = new RuleConfiguration
         {
             Type = "Product Backlog Item",

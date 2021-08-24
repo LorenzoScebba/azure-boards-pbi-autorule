@@ -29,12 +29,13 @@ namespace azure_boards_pbi_autorule.Services
 
         public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
         {
-            Log.Information("{typeChanged} '#{idChanged}' state has changed to {stateChanged}, applying rules on {typeParent}", 
+            Log.Information(
+                "{typeChanged} '#{idChanged}' state has changed to {stateChanged}, applying rules on {typeParent}",
                 vm.workItemType,
                 vm.workItemId,
                 vm.state,
                 parentWorkItem.GetWorkItemField("System.WorkItemType")
-                );
+            );
 
             foreach (var ruleConfig in _rules)
             {
@@ -47,6 +48,10 @@ namespace azure_boards_pbi_autorule.Services
 
                     if (rule.IfChildState.Equals(vm.state))
                     {
+                        if (rule.SetParentStateTo.Equals(parentWorkItem.GetWorkItemField("System.State")))
+                            return Result<Rule, string>.Fail(
+                                $"Parent state is already '{rule.SetParentStateTo}', skipping!");
+
                         if (!rule.AllChildren)
                         {
                             if (!rule.NotParentStates.Contains(parentWorkItem.GetWorkItemField("System.State")))
@@ -77,7 +82,7 @@ namespace azure_boards_pbi_autorule.Services
 
                             if (count.Equals(0))
                             {
-                                Log.Information("Updating {type} '#{id}' with {state}", 
+                                Log.Information("Updating {type} '#{id}' with {state}",
                                     parentWorkItem.GetWorkItemField("System.WorkItemType"),
                                     parentWorkItem.Id,
                                     rule.SetParentStateTo);

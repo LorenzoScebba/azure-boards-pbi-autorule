@@ -22,7 +22,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
                 .ReturnsAsync(new WorkItem
                 {
-                    Id = 1,
+                    Id = 1
                     // other parameters omitted for testing
                 });
 
@@ -43,7 +43,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.True(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
         }
-        
+
         [Test]
         public async Task Index_WrongEvent()
         {
@@ -61,9 +61,10 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObjectWithWrongEventType));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            Assert.AreEqual("Event type is not workitem.updated", controller.Response.Headers["x-autorule-info"].ToString());
+            Assert.AreEqual("Event type is not workitem.updated",
+                controller.Response.Headers["x-autorule-info"].ToString());
         }
-        
+
         [Test]
         public async Task Index_NoParent()
         {
@@ -73,7 +74,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
             workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
                 .ReturnsAsync((WorkItem)null);
-            
+
             var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
             {
                 ControllerContext = new ControllerContext
@@ -85,7 +86,8 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            StringAssert.Contains("Parent work item with id", controller.Response.Headers["x-autorule-info"].ToString());
+            StringAssert.Contains("Parent work item with id",
+                controller.Response.Headers["x-autorule-info"].ToString());
         }
 
         [Test]
@@ -105,9 +107,10 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
-            StringAssert.Contains("No rule is configured for type", controller.Response.Headers["x-autorule-info"].ToString());
+            StringAssert.Contains("No rule is configured for type",
+                controller.Response.Headers["x-autorule-info"].ToString());
         }
-        
+
         [Test]
         public async Task Index_NoWork()
         {
@@ -118,10 +121,10 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
                 .ReturnsAsync(new WorkItem
                 {
-                    Id = 1,
+                    Id = 1
                     // other parameters omitted for testing
                 });
-            
+
             rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>(), It.IsAny<WorkItem>()))
                 .ReturnsAsync(Result<Rule, string>.Fail("No rule matched"));
 

@@ -74,7 +74,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             Assert.IsFalse(result.HasError);
             Assert.AreEqual(TestUtils.SampleTaskRules.Rules[1], result.Data);
         }
-        
+
         [Test]
         public async Task ApplyRules_MultipleRules_ToCommittedPBI()
         {
