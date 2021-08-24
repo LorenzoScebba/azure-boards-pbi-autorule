@@ -11,6 +11,7 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
             IEnumerable<string> fields = null,
             DateTime? asOf = null,
             WorkItemExpand? expand = null);
+
         Task<IEnumerable<WorkItem>> ListChildWorkItemsForParent(WorkItem parentWorkItem);
         Task<WorkItem> UpdateWorkItemState(WorkItem workItem, string state);
     }
