@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services;
 using azure_boards_pbi_autorule.Services.Interfaces;
@@ -16,7 +17,7 @@ namespace azure_boards_pbi_autorule_tests.Services
         public async Task ApplyRules_ToCommitted()
         {
             var workItemsService = new Mock<IWorkItemsService>();
-            var service = new RulesApplierService(workItemsService.Object, TestUtils.SampleRules);
+            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
 
             var vm = new AzureWebHookModel
             {
@@ -67,7 +68,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
                 .ReturnsAsync(workItemsRelated);
                 
-            var service = new RulesApplierService(workItemsService.Object, TestUtils.SampleRules);
+            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
 
             var vm = new AzureWebHookModel
             {
@@ -118,7 +119,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
                 .ReturnsAsync(workItemsRelated);
                 
-            var service = new RulesApplierService(workItemsService.Object, TestUtils.SampleRules);
+            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRules });
 
             var vm = new AzureWebHookModel
             {
@@ -150,7 +151,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             workItemsService.Setup(x => x.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
                 .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
             
-            var service = new RulesApplierService(workItemsService.Object, TestUtils.SampleRulesWithWrongSetParentStateTo);
+            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRulesWithWrongSetParentStateTo });
 
             var vm = new AzureWebHookModel
             {
@@ -183,7 +184,7 @@ namespace azure_boards_pbi_autorule_tests.Services
             workItemsService.Setup(x => x.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
                 .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
             
-            var service = new RulesApplierService(workItemsService.Object, TestUtils.SampleRulesWithWrongSetParentStateTo);
+            var service = new RulesApplierService(workItemsService.Object, new List<RuleConfiguration> { TestUtils.SampleRulesWithWrongSetParentStateTo });
 
             var vm = new AzureWebHookModel
             {

@@ -25,7 +25,8 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                     Id = 1,
                     // other parameters omitted for testing
                 });
-            
+
+            rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
             rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>(), It.IsAny<WorkItem>()))
                 .ReturnsAsync(Result<Rule, string>.Ok(TestUtils.SampleRules.Rules[1]));
 
