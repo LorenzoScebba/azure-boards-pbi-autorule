@@ -1,6 +1,6 @@
 [![.NET](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/dotnet-test.yml/badge.svg)](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/dotnet-test.yml)
 [![Docker Image CI](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/docker-image.yml/badge.svg)](https://github.com/LorenzoScebba/azure-boards-pbi-autorule/actions/workflows/docker-image.yml)
-[![Docker hub](https://res.cloudinary.com/dsb3vmg4x/image/upload/b_rgb:dae8fd,c_fit,h_20,w_100,c_pad/v1629815565/azure-boards-pbi-autorule/docker.png)](https://hub.docker.com/repository/docker/lorenzoscebba/azure-boards-pbi-autorule/general)
+[![Docker hub](https://res.cloudinary.com/dsb3vmg4x/image/upload/b_rgb:dae8fd,c_fit,h_20,w_100,c_pad/v1629815565/azure-boards-pbi-autorule/docker.png)](https://hub.docker.com/r/lorenzoscebba/azure-boards-pbi-autorule)
 
 # Wait what is this?
 
