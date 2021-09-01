@@ -14,22 +14,22 @@ Each rule can be customized and consists of the following variables:
   "Type": "Task",
   "Rules": [
     {
-      "IfChildState": "In Progress",
+      "IfState": "In Progress",
       "NotParentStates": [
         "Done",
         "Removed"
       ],
       "SetParentStateTo": "Committed",
-      "AllChildren": false
+      "All": false
     }
   ]
 }
 ```
 
-The above rule is triggered each time a **Task** moves from any state to **In Progress** (`IfChildState`), the rule also
+The above rule is triggered each time a **Task** moves from any state to **In Progress** (`IfState`), the rule also
 checks that the parent state is not **Done** or **Removed** (`NotParentState`) and if that's the case it modifies the
 parent state to **Committed** (`SetParentStateTo`). For this rule to work it is not necessary that all childrens are
-**In Progress** (`AllChildren`)
+**In Progress** (`All`)
 
 ## How to configure it
 
@@ -83,20 +83,20 @@ docker run --env-file env.list -p 5000:80 azure-boards-pbi-autorule:latest
   "Azure__Pat": "****************************************************",
   "Azure__Uri": "https://dev.azure.com/*****",
   "Rules__0__Type": "Task",
-  "Rules__0__Rules__0__IfChildState": "To Do",
+  "Rules__0__Rules__0__IfState": "To Do",
   "Rules__0__Rules__0__NotParentStates__0": "Done",
   "Rules__0__Rules__0__NotParentStates__1": "Removed",
   "Rules__0__Rules__0__SetParentStateTo": "New",
-  "Rules__0__Rules__0__AllChildren": true,
-  "Rules__0__Rules__1__IfChildState": "In Progress",
+  "Rules__0__Rules__0__All": true,
+  "Rules__0__Rules__1__IfState": "In Progress",
   "Rules__0__Rules__1__NotParentStates__0": "Done",
   "Rules__0__Rules__1__NotParentStates__1": "Removed",
   "Rules__0__Rules__1__SetParentStateTo": "Committed",
-  "Rules__0__Rules__1__AllChildren": false,
-  "Rules__0__Rules__2__IfChildState": "Done",
+  "Rules__0__Rules__1__All": false,
+  "Rules__0__Rules__2__IfState": "Done",
   "Rules__0__Rules__2__NotParentStates__0": "Removed",
   "Rules__0__Rules__2__SetParentStateTo": "Done",
-  "Rules__0__Rules__2__AllChildren": true
+  "Rules__0__Rules__2__All": true
 }
 ```
 
@@ -123,7 +123,7 @@ docker run --env-file env.list -p 5000:80 azure-boards-pbi-autorule:latest
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__0__IfChildState",
+    "name": "Rules__0__Rules__0__IfState",
     "value": "To Do",
     "slotSetting": false
   },
@@ -143,12 +143,12 @@ docker run --env-file env.list -p 5000:80 azure-boards-pbi-autorule:latest
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__0__AllChildren",
+    "name": "Rules__0__Rules__0__All",
     "value": "true",
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__1__IfChildState",
+    "name": "Rules__0__Rules__1__IfState",
     "value": "In Progress",
     "slotSetting": false
   },
@@ -168,12 +168,12 @@ docker run --env-file env.list -p 5000:80 azure-boards-pbi-autorule:latest
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__1__AllChildren",
+    "name": "Rules__0__Rules__1__All",
     "value": "false",
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__2__IfChildState",
+    "name": "Rules__0__Rules__2__IfState",
     "value": "Done",
     "slotSetting": false
   },
@@ -188,7 +188,7 @@ docker run --env-file env.list -p 5000:80 azure-boards-pbi-autorule:latest
     "slotSetting": false
   },
   {
-    "name": "Rules__0__Rules__2__AllChildren",
+    "name": "Rules__0__Rules__2__All",
     "value": "true",
     "slotSetting": false
   }

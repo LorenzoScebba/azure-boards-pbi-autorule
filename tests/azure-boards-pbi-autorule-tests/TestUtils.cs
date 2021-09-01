@@ -57,17 +57,17 @@ namespace azure_boards_pbi_autorule_tests
             {
                 new Rule
                 {
-                    IfChildState = "To Do",
+                    IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
-                    AllChildren = true
+                    All = true
                 },
                 new Rule
                 {
-                    IfChildState = "In Progress",
+                    IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Committed",
-                    AllChildren = false
+                    All = false
                 }
             }
         };
@@ -79,17 +79,17 @@ namespace azure_boards_pbi_autorule_tests
             {
                 new Rule
                 {
-                    IfChildState = "New",
+                    IfState = "New",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
-                    AllChildren = true
+                    All = true
                 },
                 new Rule
                 {
-                    IfChildState = "Committed",
+                    IfState = "Committed",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Committed",
-                    AllChildren = false
+                    All = false
                 }
             }
         };
@@ -101,17 +101,17 @@ namespace azure_boards_pbi_autorule_tests
             {
                 new Rule
                 {
-                    IfChildState = "To Do",
+                    IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Test",
-                    AllChildren = true
+                    All = true
                 },
                 new Rule
                 {
-                    IfChildState = "In Progress",
+                    IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Test",
-                    AllChildren = false
+                    All = false
                 }
             }
         };

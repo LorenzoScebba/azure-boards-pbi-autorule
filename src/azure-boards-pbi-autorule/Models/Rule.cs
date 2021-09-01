@@ -2,12 +2,12 @@
 {
     public class Rule
     {
-        public string IfChildState { get; set; }
+        public string IfState { get; set; }
 
         public string[] NotParentStates { get; set; }
 
         public string SetParentStateTo { get; set; }
 
-        public bool AllChildren { get; set; }
+        public bool All { get; set; }
     }
 }
