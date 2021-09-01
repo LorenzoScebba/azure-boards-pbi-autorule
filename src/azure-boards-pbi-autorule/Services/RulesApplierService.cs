@@ -46,13 +46,13 @@ namespace azure_boards_pbi_autorule.Services
                 {
                     var childWorkItems = (await _client.ListChildWorkItemsForParent(parentWorkItem)).ToList();
 
-                    if (rule.IfChildState.Equals(vm.state))
+                    if (rule.IfState.Equals(vm.state))
                     {
                         if (rule.SetParentStateTo.Equals(parentWorkItem.GetWorkItemField("System.State")))
                             return Result<Rule, string>.Fail(
                                 $"Parent state is already '{rule.SetParentStateTo}', skipping!");
 
-                        if (!rule.AllChildren)
+                        if (!rule.All)
                         {
                             if (!rule.NotParentStates.Contains(parentWorkItem.GetWorkItemField("System.State")))
                             {
@@ -77,7 +77,7 @@ namespace azure_boards_pbi_autorule.Services
                         {
                             // check to see if any of the child items are not closed, if so, we will get a count > 0
                             var count = childWorkItems
-                                .Where(x => !x.Fields["System.State"].ToString().Equals(rule.IfChildState)).ToList()
+                                .Where(x => !x.Fields["System.State"].ToString().Equals(rule.IfState)).ToList()
                                 .Count;
 
                             if (count.Equals(0))
