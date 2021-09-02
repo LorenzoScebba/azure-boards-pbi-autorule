@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Configurations;
@@ -27,14 +28,13 @@ namespace azure_boards_pbi_autorule.Services
             return _rules.Any(r => r.Type.Equals(type));
         }
 
-        public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm, WorkItem parentWorkItem)
+        public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm)
         {
-            Log.Information(
-                "{typeChanged} '#{idChanged}' state has changed to {stateChanged}, applying rules on {typeParent}",
+           Log.Information(
+                "{typeChanged} '#{idChanged}' state has changed to {stateChanged}, applying rules...",
                 vm.workItemType,
                 vm.workItemId,
-                vm.state,
-                parentWorkItem.GetWorkItemField("System.WorkItemType")
+                vm.state
             );
 
             foreach (var ruleConfig in _rules)
@@ -44,53 +44,99 @@ namespace azure_boards_pbi_autorule.Services
 
                 foreach (var rule in ruleConfig.Rules)
                 {
-                    var childWorkItems = (await _client.ListChildWorkItemsForParent(parentWorkItem)).ToList();
 
-                    if (rule.IfState.Equals(vm.state))
+                    if (!string.IsNullOrWhiteSpace(rule.SetParentStateTo))
                     {
-                        if (rule.SetParentStateTo.Equals(parentWorkItem.GetWorkItemField("System.State")))
-                            return Result<Rule, string>.Fail(
-                                $"Parent state is already '{rule.SetParentStateTo}', skipping!");
+                        var parentWorkItem = await _client.GetWorkItemAsync(vm.parentId, null, null, WorkItemExpand.Relations);
 
-                        if (!rule.All)
+                        if (parentWorkItem == null)
                         {
-                            if (!rule.NotParentStates.Contains(parentWorkItem.GetWorkItemField("System.State")))
-                            {
-                                Log.Information("Updating {type} '#{id}' with {state}",
-                                    parentWorkItem.GetWorkItemField("System.WorkItemType"),
-                                    parentWorkItem.Id,
-                                    rule.SetParentStateTo);
+                            return Result<Rule, string>.Fail("No parent is available.");
+                        }
 
-                                try
+                        var childWorkItems = (await _client.ListChildWorkItemsForParent(parentWorkItem)).ToList();
+
+                        // We're updating the parent of the changed work item 
+                        
+                        if (rule.IfState.Equals(vm.state))
+                        {
+                            if (rule.SetParentStateTo.Equals(parentWorkItem.GetWorkItemField("System.State")))
+                                return Result<Rule, string>.Fail(
+                                    $"Parent state is already '{rule.SetParentStateTo}', skipping!");
+
+                            if (rule.All)
+                            {
+                                // check to see if any of the child items are not closed, if so, we will get a count > 0
+                                var count = childWorkItems
+                                    .Where(x => !x.GetWorkItemField("System.State").Equals(rule.IfState)).ToList()
+                                    .Count;
+
+                                if (count.Equals(0))
                                 {
-                                    await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                                    return Result<Rule, string>.Ok(rule);
+                                    Log.Information("Updating {type} '#{id}' with {state}",
+                                        parentWorkItem.GetWorkItemField("System.WorkItemType"),
+                                        parentWorkItem.Id,
+                                        rule.SetParentStateTo);
+
+                                    try
+                                    {
+                                        await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                        return Result<Rule, string>.Ok(rule);
+                                    }
+                                    catch (RuleValidationException e)
+                                    {
+                                        return Result<Rule, string>.Fail(
+                                            $"A rule validation exception occurred, please review the rule. Error was {e.Message}");
+                                    }
                                 }
-                                catch (RuleValidationException e)
+                            }
+                            else
+                            {
+                                if (!rule.NotParentStates.Contains(parentWorkItem.GetWorkItemField("System.State")))
                                 {
-                                    return Result<Rule, string>.Fail(
-                                        $"A rule validation exception occurred, please review the rule. Error was {e.Message}");
+                                    Log.Information("Updating {type} '#{id}' with {state}",
+                                        parentWorkItem.GetWorkItemField("System.WorkItemType"),
+                                        parentWorkItem.Id,
+                                        rule.SetParentStateTo);
+
+                                    try
+                                    {
+                                        await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
+                                        return Result<Rule, string>.Ok(rule);
+                                    }
+                                    catch (RuleValidationException e)
+                                    {
+                                        return Result<Rule, string>.Fail(
+                                            $"A rule validation exception occurred, please review the rule. Error was {e.Message}");
+                                    }
                                 }
                             }
                         }
-                        else
+                    }
+                    else if(!string.IsNullOrWhiteSpace(rule.SetChildrenStateTo))
+                    {
+                        var workItem = await _client.GetWorkItemAsync(vm.workItemId, null, null, WorkItemExpand.Relations);
+
+                        if (workItem == null)
                         {
-                            // check to see if any of the child items are not closed, if so, we will get a count > 0
-                            var count = childWorkItems
-                                .Where(x => !x.Fields["System.State"].ToString().Equals(rule.IfState)).ToList()
-                                .Count;
-
-                            if (count.Equals(0))
+                            return Result<Rule, string>.Fail("No parent is available.");
+                        }
+                        
+                        var childWorkItems = (await _client.ListChildWorkItemsForParent(workItem)).ToList();
+                        
+                        // We're updating the childrens of the changed work item 
+                        if (rule.IfState.Equals(vm.state))
+                        {
+                            foreach (var childWorkItem in childWorkItems)
                             {
-                                Log.Information("Updating {type} '#{id}' with {state}",
-                                    parentWorkItem.GetWorkItemField("System.WorkItemType"),
-                                    parentWorkItem.Id,
-                                    rule.SetParentStateTo);
-
                                 try
                                 {
-                                    await _client.UpdateWorkItemState(parentWorkItem, rule.SetParentStateTo);
-                                    return Result<Rule, string>.Ok(rule);
+                                    Log.Information("Updating {type} '#{id}' with {state}",
+                                        childWorkItem.GetWorkItemField("System.WorkItemType"),
+                                        childWorkItem.Id,
+                                        rule.SetChildrenStateTo);
+                                    
+                                    await _client.UpdateWorkItemState(childWorkItem, rule.SetChildrenStateTo);
                                 }
                                 catch (RuleValidationException e)
                                 {
@@ -98,6 +144,8 @@ namespace azure_boards_pbi_autorule.Services
                                         $"A rule validation exception occurred, please review the rule. Error was {e.Message}");
                                 }
                             }
+                            
+                            return Result<Rule, string>.Ok(rule);
                         }
                     }
                 }
