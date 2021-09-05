@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using azure_boards_pbi_autorule.Utils;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;

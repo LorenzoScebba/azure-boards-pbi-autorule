@@ -42,7 +42,6 @@ namespace azure_boards_pbi_autorule.Services
                     continue;
 
                 foreach (var rule in ruleConfig.Rules)
-                {
                     if (!string.IsNullOrWhiteSpace(rule.SetParentStateTo))
                     {
                         var result = await ApplyRulesToParent(vm, rule);
@@ -53,11 +52,10 @@ namespace azure_boards_pbi_autorule.Services
                     else if (!string.IsNullOrWhiteSpace(rule.SetChildrenStateTo))
                     {
                         var result = await ApplyRulesToChildrens(vm, rule);
-                        
+
                         if (result != null)
                             return result;
                     }
-                }
             }
 
             return Result<Rule, string>.Fail("No rule matched");
@@ -67,10 +65,7 @@ namespace azure_boards_pbi_autorule.Services
         {
             var parentWorkItem = await _client.GetWorkItemAsync(vm.parentId, null, null, WorkItemExpand.Relations);
 
-            if (parentWorkItem == null)
-            {
-                return Result<Rule, string>.Fail("No parent is available.");
-            }
+            if (parentWorkItem == null) return Result<Rule, string>.Fail("No parent is available.");
 
             var childWorkItems = (await _client.ListChildWorkItemsForParent(parentWorkItem)).ToList();
 
@@ -139,10 +134,7 @@ namespace azure_boards_pbi_autorule.Services
             var workItem =
                 await _client.GetWorkItemAsync(vm.workItemId, null, null, WorkItemExpand.Relations);
 
-            if (workItem == null)
-            {
-                return Result<Rule, string>.Fail("No parent is available.");
-            }
+            if (workItem == null) return Result<Rule, string>.Fail("No parent is available.");
 
             var childWorkItems = (await _client.ListChildWorkItemsForParent(workItem)).ToList();
 
@@ -150,7 +142,6 @@ namespace azure_boards_pbi_autorule.Services
             if (rule.IfState.Equals(vm.state))
             {
                 foreach (var childWorkItem in childWorkItems)
-                {
                     try
                     {
                         Log.Information("Updating {type} '#{id}' with {state}",
@@ -165,7 +156,6 @@ namespace azure_boards_pbi_autorule.Services
                         return Result<Rule, string>.Fail(
                             $"A rule validation exception occurred, please review the rule. Error was {e.Message}");
                     }
-                }
 
                 return Result<Rule, string>.Ok(rule);
             }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
@@ -45,7 +44,7 @@ namespace azure_boards_pbi_autorule_tests.Services
                 workItemsService.Setup(wis =>
                         wis.GetWorkItemAsync(It.IsAny<int>(), null, null, It.IsAny<WorkItemExpand>()))
                     .ReturnsAsync(new WorkItem { Id = 1 });
-                
+
                 // Childrens defined up top
                 workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
                     .ReturnsAsync(relatedTasks);
@@ -69,7 +68,7 @@ namespace azure_boards_pbi_autorule_tests.Services
                 Assert.IsFalse(result.HasError);
                 Assert.AreEqual(TestUtils.SampleTaskRules.Rules[0], result.Data);
             }
-            
+
             [Test]
             public async Task ApplyRules_ToCommitted()
             {
@@ -148,7 +147,6 @@ namespace azure_boards_pbi_autorule_tests.Services
                 Assert.AreEqual(TestUtils.SampleProductBacklogItemRules.Rules[1], result.Data);
             }
 
-           
 
             [Test]
             public async Task ApplyRules_ToNew_OneStillInCommitted()
