@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using azure_boards_pbi_autorule.Configurations;
 using azure_boards_pbi_autorule.Models;
@@ -248,6 +249,111 @@ namespace azure_boards_pbi_autorule_tests.Services
                 Assert.IsTrue(result.HasError);
                 StringAssert.Contains("Sample Rule Validation Exception Message", result.Error);
             }
+        }
+        
+        [TestFixture]
+        public class Childrens
+        {
+            [Test]
+            public async Task ApplyRules_ChildrensToDone()
+            {
+                var relatedTasks = new List<WorkItem>
+                {
+                    new WorkItem
+                    {
+                        Fields = new Dictionary<string, object>
+                        {
+                            { "System.State", "To Do" }
+                        }
+                    },
+                    new WorkItem
+                    {
+                        Fields = new Dictionary<string, object>
+                        {
+                            { "System.State", "To Do" }
+                        }
+                    }
+                };
+
+                var workItemsService = new Mock<IWorkItemsService>();
+                workItemsService.Setup(wis =>
+                        wis.GetWorkItemAsync(It.IsAny<int>(), null, null, It.IsAny<WorkItemExpand>()))
+                    .ReturnsAsync(new WorkItem { Id = 1 });
+
+                workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
+                    .ReturnsAsync(relatedTasks);
+
+                workItemsService.Setup(wis => wis.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
+                    .ReturnsAsync(new WorkItem());
+
+                var service = new RulesApplierService(workItemsService.Object,
+                    new List<RuleConfiguration> { TestUtils.SampleChildrensRules });
+
+                var vm = new AzureWebHookModel
+                {
+                    state = "Done",
+                    eventType = "workitem.updated",
+                    parentId = 1,
+                    workItemId = 2,
+                    workItemType = "Product Backlog Item"
+                };
+
+                var result = await service.ApplyRules(vm);
+
+                Assert.IsFalse(result.HasError);
+                Assert.AreEqual(TestUtils.SampleChildrensRules.Rules[0], result.Data);
+            }
+            
+            [Test]
+            public async Task ApplyRules_ChildrensValidationException()
+            {
+                var relatedTasks = new List<WorkItem>
+                {
+                    new WorkItem
+                    {
+                        Fields = new Dictionary<string, object>
+                        {
+                            { "System.State", "To Do" }
+                        }
+                    },
+                    new WorkItem
+                    {
+                        Fields = new Dictionary<string, object>
+                        {
+                            { "System.State", "To Do" }
+                        }
+                    }
+                };
+
+                var workItemsService = new Mock<IWorkItemsService>();
+                workItemsService.Setup(wis =>
+                        wis.GetWorkItemAsync(It.IsAny<int>(), null, null, It.IsAny<WorkItemExpand>()))
+                    .ReturnsAsync(new WorkItem { Id = 1 });
+
+                workItemsService.Setup(x => x.ListChildWorkItemsForParent(It.IsAny<WorkItem>()))
+                    .ReturnsAsync(relatedTasks);
+
+                workItemsService.Setup(wis => wis.UpdateWorkItemState(It.IsAny<WorkItem>(), It.IsAny<string>()))
+                    .ThrowsAsync(new RuleValidationException("'Rule validation error message'", new Exception()));
+
+                var service = new RulesApplierService(workItemsService.Object,
+                    new List<RuleConfiguration> { TestUtils.SampleChildrensRules });
+
+                var vm = new AzureWebHookModel
+                {
+                    state = "Done",
+                    eventType = "workitem.updated",
+                    parentId = 1,
+                    workItemId = 2,
+                    workItemType = "Product Backlog Item"
+                };
+
+                var result = await service.ApplyRules(vm);
+
+                Assert.IsTrue(result.HasError);
+                StringAssert.Contains("A rule validation exception occurred", result.Error);
+            }
+            
         }
     }
 }

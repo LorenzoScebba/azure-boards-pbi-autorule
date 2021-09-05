@@ -71,6 +71,19 @@ namespace azure_boards_pbi_autorule_tests
                 }
             }
         };
+        
+        public static readonly RuleConfiguration SampleChildrensRules = new RuleConfiguration
+        {
+            Type = "Product Backlog Item",
+            Rules = new[]
+            {
+                new Rule
+                {
+                    IfState = "Done",
+                    SetChildrenStateTo = "Done",
+                },
+            }
+        };
 
         public static readonly RuleConfiguration SampleProductBacklogItemRules = new RuleConfiguration
         {
