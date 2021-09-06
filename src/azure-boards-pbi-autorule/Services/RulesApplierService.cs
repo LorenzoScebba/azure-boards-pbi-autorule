@@ -144,12 +144,14 @@ namespace azure_boards_pbi_autorule.Services
                 foreach (var childWorkItem in childWorkItems)
                     try
                     {
-                        Log.Information("Updating {type} '#{id}' with {state}",
-                            childWorkItem.GetWorkItemField("System.WorkItemType"),
-                            childWorkItem.Id,
-                            rule.SetChildrenStateTo);
-
-                        await _client.UpdateWorkItemState(childWorkItem, rule.SetChildrenStateTo);
+                        if(!childWorkItem.GetWorkItemField("System.State").Equals(rule.SetChildrenStateTo)){
+                            Log.Information("Updating {type} '#{id}' with {state}",
+                                childWorkItem.GetWorkItemField("System.WorkItemType"),
+                                childWorkItem.Id,
+                                rule.SetChildrenStateTo);
+                            
+                            await _client.UpdateWorkItemState(childWorkItem, rule.SetChildrenStateTo);
+                        }
                     }
                     catch (RuleValidationException e)
                     {

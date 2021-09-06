@@ -47,6 +47,7 @@ namespace azure_boards_pbi_autorule.Controllers
             {
                 Response.Headers.Add("x-autorule-info", $"{result.Data.Target} updated with {result.Data.TargetRule}");
                 Response.Headers.Add("x-autorule-match", JsonConvert.SerializeObject(result.Data));
+                Log.Information($"{result.Data.Target} updated with {result.Data.TargetRule}");
                 return Ok($"{result.Data.Target} updated with {result.Data.TargetRule}");
             }
 
