@@ -27,7 +27,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 });
 
             rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
-            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>(), It.IsAny<WorkItem>()))
+            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>()))
                 .ReturnsAsync(Result<Rule, string>.Ok(TestUtils.SampleTaskRules.Rules[1]));
 
             var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
@@ -66,31 +66,6 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         }
 
         [Test]
-        public async Task Index_NoParent()
-        {
-            var workItemsService = new Mock<IWorkItemsService>();
-            var rulesApplierService = new Mock<IRulesApplierService>();
-
-            rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
-            workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
-                .ReturnsAsync((WorkItem)null);
-
-            var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
-            {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext()
-                }
-            };
-
-            var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
-
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            StringAssert.Contains("Parent work item with id",
-                controller.Response.Headers["x-autorule-info"].ToString());
-        }
-
-        [Test]
         public async Task Index_NoRuleMatch()
         {
             var workItemsService = new Mock<IWorkItemsService>();
@@ -125,7 +100,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                     // other parameters omitted for testing
                 });
 
-            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>(), It.IsAny<WorkItem>()))
+            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>()))
                 .ReturnsAsync(Result<Rule, string>.Fail("No rule matched"));
 
             var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)

@@ -45,7 +45,7 @@ namespace azure_boards_pbi_autorule.Services
 
                 IList<int> ids = children.Select(child => AzureUtils.GetWorkItemIdFromUrl(child.Url)).ToList();
 
-                return await _client.GetWorkItemsAsync(ids, new[] { "System.State" });
+                return await _client.GetWorkItemsAsync(ids, new[] { "System.WorkItemType", "System.State" });
             }
             catch (Exception)
             {
