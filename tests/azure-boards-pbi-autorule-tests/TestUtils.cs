@@ -50,7 +50,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleTaskRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleTaskStateRules = new StateRuleConfiguration
         {
             Type = "Task",
             Rules = new[]
@@ -72,7 +72,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
         
-        public static readonly RuleConfiguration SampleChildrensRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleChildrensStateRules = new StateRuleConfiguration
         {
             Type = "Product Backlog Item",
             Rules = new[]
@@ -85,7 +85,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleProductBacklogItemRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleProductBacklogItemStateRules = new StateRuleConfiguration
         {
             Type = "Product Backlog Item",
             Rules = new[]
@@ -107,7 +107,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleInvalidTaskRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleInvalidTaskStateRules = new StateRuleConfiguration
         {
             Type = "Task",
             Rules = new[]

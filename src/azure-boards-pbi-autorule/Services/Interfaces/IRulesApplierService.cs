@@ -5,7 +5,8 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
 {
     public interface IRulesApplierService
     {
-        bool HasRuleForType(string type);
-        Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm);
+        bool HasStateRuleForType(string type);
+        bool HasAreaRuleForType(string type);
+        Task<Result<Rule, string>> ApplyStateRules(AzureWebHookModel vm);
     }
 }

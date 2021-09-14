@@ -26,9 +26,9 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                     // other parameters omitted for testing
                 });
 
-            rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
-            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>()))
-                .ReturnsAsync(Result<Rule, string>.Ok(TestUtils.SampleTaskRules.Rules[1]));
+            rulesApplierService.Setup(x => x.HasStateRuleForType(It.IsAny<string>())).Returns(true);
+            rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
+                .ReturnsAsync(Result<Rule, string>.Ok(TestUtils.SampleTaskStateRules.Rules[1]));
 
             var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
             {
@@ -92,7 +92,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
-            rulesApplierService.Setup(x => x.HasRuleForType(It.IsAny<string>())).Returns(true);
+            rulesApplierService.Setup(x => x.HasStateRuleForType(It.IsAny<string>())).Returns(true);
             workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
                 .ReturnsAsync(new WorkItem
                 {
@@ -100,7 +100,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                     // other parameters omitted for testing
                 });
 
-            rulesApplierService.Setup(x => x.ApplyRules(It.IsAny<AzureWebHookModel>()))
+            rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
                 .ReturnsAsync(Result<Rule, string>.Fail("No rule matched"));
 
             var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)

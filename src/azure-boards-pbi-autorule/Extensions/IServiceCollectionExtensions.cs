@@ -27,10 +27,12 @@ namespace azure_boards_pbi_autorule.Extensions
             services.AddSingleton(new HttpClient());
 
             var config = configuration.GetSection("Azure").Get<AzureConfiguration>();
-            var rules = configuration.GetSection("Rules").Get<IEnumerable<RuleConfiguration>>();
+            var rules = configuration.GetSection("Rules").Get<IEnumerable<StateRuleConfiguration>>();
+            var areaRules = configuration.GetSection("AreaRules").Get<IEnumerable<AreaRuleConfiguration>>();
             Log.Information("Starting with rules {@rules}", rules);
             services.AddSingleton(rules);
-
+            services.AddSingleton(areaRules);
+            
             var creds = new VssBasicCredential(string.Empty, config.Pat);
 
             // Connect to Azure DevOps Services

@@ -14,20 +14,27 @@ namespace azure_boards_pbi_autorule.Services
     public class RulesApplierService : IRulesApplierService
     {
         private readonly IWorkItemsService _client;
-        private readonly IEnumerable<RuleConfiguration> _rules;
+        private readonly IEnumerable<StateRuleConfiguration> _stateRules;
+        private readonly IEnumerable<AreaRuleConfiguration> _areaRules;
 
-        public RulesApplierService(IWorkItemsService client, IEnumerable<RuleConfiguration> rules)
+        public RulesApplierService(IWorkItemsService client, IEnumerable<StateRuleConfiguration> stateRules, IEnumerable<AreaRuleConfiguration> areaRules)
         {
             _client = client;
-            _rules = rules;
+            _stateRules = stateRules;
+            _areaRules = areaRules;
         }
 
-        public bool HasRuleForType(string type)
+        public bool HasStateRuleForType(string type)
         {
-            return _rules.Any(r => r.Type.Equals(type));
+            return _stateRules.Any(r => r.Type.Equals(type));
         }
 
-        public async Task<Result<Rule, string>> ApplyRules(AzureWebHookModel vm)
+        public bool HasAreaRuleForType(string type)
+        {
+            return _areaRules.Any(r => r.Type.Contains(type));
+        }
+
+        public async Task<Result<Rule, string>> ApplyStateRules(AzureWebHookModel vm)
         {
             Log.Information(
                 "{typeChanged} '#{idChanged}' state has changed to {stateChanged}, applying rules...",
@@ -36,7 +43,7 @@ namespace azure_boards_pbi_autorule.Services
                 vm.state
             );
 
-            foreach (var ruleConfig in _rules)
+            foreach (var ruleConfig in _stateRules)
             {
                 if (!ruleConfig.Type.Equals(vm.workItemType))
                     continue;
