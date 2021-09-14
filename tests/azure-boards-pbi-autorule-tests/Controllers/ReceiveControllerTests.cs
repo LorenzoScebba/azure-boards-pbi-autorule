@@ -14,7 +14,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
     public class ReceiveControllerTests
     {
         [Test]
-        public async Task Index_SampleFlow()
+        public async Task State_SampleFlow()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
@@ -38,14 +38,14 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.True(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
         }
 
         [Test]
-        public async Task Index_WrongEvent()
+        public async Task State_WrongEvent()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
@@ -58,7 +58,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObjectWithWrongEventType));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObjectWithWrongEventType));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.AreEqual("Event type is not workitem.updated",
@@ -66,7 +66,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         }
 
         [Test]
-        public async Task Index_NoRuleMatch()
+        public async Task State_NoRuleMatch()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
@@ -79,7 +79,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             StringAssert.Contains("No rule is configured for type",
@@ -87,7 +87,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         }
 
         [Test]
-        public async Task Index_NoWork()
+        public async Task State_NoWork()
         {
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
@@ -111,7 +111,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.Index(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             StringAssert.Contains("No rule matched", controller.Response.Headers["x-autorule-info"].ToString());

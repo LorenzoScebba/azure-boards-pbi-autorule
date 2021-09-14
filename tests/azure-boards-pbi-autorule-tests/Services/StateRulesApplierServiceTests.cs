@@ -13,7 +13,7 @@ using NUnit.Framework;
 namespace azure_boards_pbi_autorule_tests.Services
 {
     [TestFixture]
-    public class RulesApplierServiceTests
+    public class StateRulesApplierServiceTests
     {
         [TestFixture]
         public class Parent
@@ -51,7 +51,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(relatedTasks);
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 // If a child goes to to do and all task are in to do
                 var vm = new AzureWebHookModel
@@ -79,7 +80,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(new WorkItem { Id = 1 });
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -105,7 +107,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(new WorkItem { Id = 1 });
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleProductBacklogItemStateRules, TestUtils.SampleTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleProductBacklogItemStateRules, TestUtils.SampleTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -131,7 +134,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(new WorkItem { Id = 1 });
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleProductBacklogItemStateRules, TestUtils.SampleTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleProductBacklogItemStateRules, TestUtils.SampleTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -178,7 +182,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(workItemsRelated);
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -205,7 +210,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleInvalidTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleInvalidTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -233,7 +239,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ThrowsAsync(new RuleValidationException("Sample Rule Validation Exception Message", null));
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleInvalidTaskStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleInvalidTaskStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -287,7 +294,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ReturnsAsync(new WorkItem());
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleChildrensStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleChildrensStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
@@ -337,7 +345,8 @@ namespace azure_boards_pbi_autorule_tests.Services
                     .ThrowsAsync(new RuleValidationException("'Rule validation error message'", new Exception()));
 
                 var service = new RulesApplierService(workItemsService.Object,
-                    new List<StateRuleConfiguration> { TestUtils.SampleChildrensStateRules });
+                    new List<StateRuleConfiguration> { TestUtils.SampleChildrensStateRules },
+                    new List<AreaRuleConfiguration>());
 
                 var vm = new AzureWebHookModel
                 {
