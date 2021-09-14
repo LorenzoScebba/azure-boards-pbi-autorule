@@ -28,9 +28,9 @@ namespace azure_boards_pbi_autorule_tests.Controllers
 
             rulesApplierService.Setup(x => x.HasStateRuleForType(It.IsAny<string>())).Returns(true);
             rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
-                .ReturnsAsync(Result<Rule, string>.Ok(TestUtils.SampleTaskStateRules.Rules[1]));
+                .ReturnsAsync(Result<StateRule, string>.Ok(TestUtils.SampleTaskStateRules.Rules[1]));
 
-            var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
+            var controller = new ReceiveController(rulesApplierService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -50,7 +50,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
-            var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
+            var controller = new ReceiveController(rulesApplierService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -71,7 +71,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
             var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
-            var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
+            var controller = new ReceiveController(rulesApplierService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -101,9 +101,9 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 });
 
             rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
-                .ReturnsAsync(Result<Rule, string>.Fail("No rule matched"));
+                .ReturnsAsync(Result<StateRule, string>.Fail("No rule matched"));
 
-            var controller = new ReceiveController(workItemsService.Object, rulesApplierService.Object)
+            var controller = new ReceiveController(rulesApplierService.Object)
             {
                 ControllerContext = new ControllerContext
                 {

@@ -55,14 +55,14 @@ namespace azure_boards_pbi_autorule_tests
             Type = "Task",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },
@@ -77,7 +77,7 @@ namespace azure_boards_pbi_autorule_tests
             Type = "Product Backlog Item",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "Done",
                     SetChildrenStateTo = "Done",
@@ -90,14 +90,14 @@ namespace azure_boards_pbi_autorule_tests
             Type = "Product Backlog Item",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "New",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "Committed",
                     NotParentStates = new[] { "Done", "Removed" },
@@ -112,14 +112,14 @@ namespace azure_boards_pbi_autorule_tests
             Type = "Task",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Test",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },

@@ -14,5 +14,6 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
 
         Task<IEnumerable<WorkItem>> ListChildWorkItemsForParent(WorkItem parentWorkItem);
         Task<WorkItem> UpdateWorkItemState(WorkItem workItem, string state);
+        Task<WorkItem> UpdateWorkItemArea(WorkItem workItem, string area);
     }
 }

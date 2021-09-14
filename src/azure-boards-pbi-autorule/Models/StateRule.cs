@@ -1,6 +1,6 @@
 ﻿namespace azure_boards_pbi_autorule.Models
 {
-    public class Rule
+    public class StateRule
     {
         public string IfState { get; set; }
 

@@ -7,6 +7,7 @@ namespace azure_boards_pbi_autorule.Services.Interfaces
     {
         bool HasStateRuleForType(string type);
         bool HasAreaRuleForType(string type);
-        Task<Result<Rule, string>> ApplyStateRules(AzureWebHookModel vm);
+        Task<Result<StateRule, string>> ApplyStateRules(AzureWebHookModel vm);
+        Task<Result<AreaRule, string>> ApplyAreaRules(AzureWebHookModel vm);
     }
 }

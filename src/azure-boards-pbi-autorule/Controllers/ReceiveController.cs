@@ -11,12 +11,10 @@ namespace azure_boards_pbi_autorule.Controllers
     [Route("/api")]
     public class ReceiveController : ControllerBase
     {
-        private readonly IWorkItemsService _client;
         private readonly IRulesApplierService _rulesApplierService;
 
-        public ReceiveController(IWorkItemsService client, IRulesApplierService rulesApplierService)
+        public ReceiveController(IRulesApplierService rulesApplierService)
         {
-            _client = client;
             _rulesApplierService = rulesApplierService;
         }
 
@@ -74,6 +72,16 @@ namespace azure_boards_pbi_autorule.Controllers
                 Response.Headers.Add("Warning", "No work done, check logs or x-autorule-info header for more info");
                 Response.Headers.Add("x-autorule-info", $"No rule is configured for type {vm.workItemType}");
                 return Ok($"No rule is configured for type {vm.workItemType}");
+            }
+            
+            var result = await _rulesApplierService.ApplyAreaRules(vm);
+
+            if (!result.HasError)
+            {
+                Response.Headers.Add("x-autorule-info", $"{vm.workItemType} area updated with {result.Data.SetAreaPathTo}");
+                Response.Headers.Add("x-autorule-match", JsonConvert.SerializeObject(result.Data));
+                Log.Information($"{vm.workItemType} area updated with {result.Data.SetAreaPathTo}");
+                return Ok($"{vm.workItemType} area updated with {result.Data.SetAreaPathTo}");
             }
             
             return Ok();
