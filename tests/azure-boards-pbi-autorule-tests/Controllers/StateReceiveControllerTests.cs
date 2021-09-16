@@ -4,27 +4,18 @@ using azure_boards_pbi_autorule.Models;
 using azure_boards_pbi_autorule.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace azure_boards_pbi_autorule_tests.Controllers
 {
-    public class ReceiveControllerTests
+    public class StateReceiveControllerTests
     {
         [Test]
         public async Task State_SampleFlow()
         {
-            var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
-
-            workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
-                .ReturnsAsync(new WorkItem
-                {
-                    Id = 1
-                    // other parameters omitted for testing
-                });
 
             rulesApplierService.Setup(x => x.HasStateRuleForType(It.IsAny<string>())).Returns(true);
             rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
@@ -38,7 +29,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleStateJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             Assert.True(string.IsNullOrWhiteSpace(controller.Response.Headers["Warning"]));
@@ -47,7 +38,6 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         [Test]
         public async Task State_WrongEvent()
         {
-            var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
             var controller = new ReceiveController(rulesApplierService.Object)
@@ -68,7 +58,6 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         [Test]
         public async Task State_NoRuleMatch()
         {
-            var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
             var controller = new ReceiveController(rulesApplierService.Object)
@@ -79,7 +68,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleStateJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             StringAssert.Contains("No rule is configured for type",
@@ -89,17 +78,10 @@ namespace azure_boards_pbi_autorule_tests.Controllers
         [Test]
         public async Task State_NoWork()
         {
-            var workItemsService = new Mock<IWorkItemsService>();
             var rulesApplierService = new Mock<IRulesApplierService>();
 
             rulesApplierService.Setup(x => x.HasStateRuleForType(It.IsAny<string>())).Returns(true);
-            workItemsService.Setup(x => x.GetWorkItemAsync(1, null, null, WorkItemExpand.Relations))
-                .ReturnsAsync(new WorkItem
-                {
-                    Id = 1
-                    // other parameters omitted for testing
-                });
-
+            
             rulesApplierService.Setup(x => x.ApplyStateRules(It.IsAny<AzureWebHookModel>()))
                 .ReturnsAsync(Result<StateRule, string>.Fail("No rule matched"));
 
@@ -111,7 +93,7 @@ namespace azure_boards_pbi_autorule_tests.Controllers
                 }
             };
 
-            var result = await controller.State(JObject.FromObject(TestUtils.SampleJObject));
+            var result = await controller.State(JObject.FromObject(TestUtils.SampleStateJObject));
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             StringAssert.Contains("No rule matched", controller.Response.Headers["x-autorule-info"].ToString());
