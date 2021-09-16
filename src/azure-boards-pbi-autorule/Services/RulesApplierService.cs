@@ -95,6 +95,10 @@ namespace azure_boards_pbi_autorule.Services
                 
             try
             {
+                if(areaRule.SetAreaPathTo.Equals(workItem.GetWorkItemField("System.AreaPath")))
+                    return Result<AreaRule, string>.Fail(
+                        $"Work item is already '{areaRule.SetAreaPathTo}', skipping!");
+                
                 await _client.UpdateWorkItemArea(workItem, areaRule.SetAreaPathTo);
                 return Result<AreaRule, string>.Ok(areaRule);
             }
