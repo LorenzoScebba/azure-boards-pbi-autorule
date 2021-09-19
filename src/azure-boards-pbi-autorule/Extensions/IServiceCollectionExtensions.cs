@@ -28,8 +28,8 @@ namespace azure_boards_pbi_autorule.Extensions
             services.AddSingleton(new HttpClient());
 
             var config = configuration.GetSection("Azure").Get<AzureConfiguration>();
-            var stateRules = configuration.GetSection("StateRules").Get<IEnumerable<StateRuleConfiguration>>().ToList();
-            var areaRules = configuration.GetSection("AreaRules").Get<IEnumerable<AreaRuleConfiguration>>().ToList();
+            var stateRules = configuration.GetSection("StateRules").Get<IEnumerable<StateRuleConfiguration>>()?.ToList() ?? new List<StateRuleConfiguration>();
+            var areaRules = configuration.GetSection("AreaRules").Get<IEnumerable<AreaRuleConfiguration>>()?.ToList() ?? new List<AreaRuleConfiguration>();
             
             Log.Information("Starting with state rules {@rules}", stateRules);
             Log.Information("Starting with area rules {@rules}", areaRules);
