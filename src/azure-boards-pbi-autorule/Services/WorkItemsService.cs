@@ -73,5 +73,26 @@ namespace azure_boards_pbi_autorule.Services
 
             return await _client.UpdateWorkItemAsync(patchDocument, Convert.ToInt32(workItem.Id));
         }
+
+        public async Task<WorkItem> UpdateWorkItemArea(WorkItem workItem, string area)
+        {
+            var patchDocument = new JsonPatchDocument
+            {
+                new JsonPatchOperation
+                {
+                    Operation = Operation.Test,
+                    Path = "/rev",
+                    Value = workItem.Rev.ToString()
+                },
+                new JsonPatchOperation
+                {
+                    Operation = Operation.Add,
+                    Path = "/fields/System.AreaPath",
+                    Value = area
+                }
+            };
+
+            return await _client.UpdateWorkItemAsync(patchDocument, Convert.ToInt32(workItem.Id));
+        }
     }
 }

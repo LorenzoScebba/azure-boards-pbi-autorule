@@ -6,7 +6,7 @@ namespace azure_boards_pbi_autorule.Utils
 {
     public static class AzureUtils
     {
-        public static AzureWebHookModel BuildPayloadViewModel(JObject body)
+        public static AzureWebHookModel BuildUpdatedPayloadViewModel(JObject body)
         {
             return new AzureWebHookModel
             {
@@ -23,6 +23,22 @@ namespace azure_boards_pbi_autorule.Utils
                 state = body["resource"]["fields"]?["System.State"]?["newValue"]?.ToString()
             };
         }
+        
+        public static AzureWebHookModel BuildCreatedPayloadViewModel(JObject body)
+        {
+            return new AzureWebHookModel
+            {
+                eventType = body["eventType"]?.ToString(),
+
+                workItemId = body["resource"]["id"] == null
+                    ? -1
+                    : Convert.ToInt32(body["resource"]["id"].ToString()),
+
+                workItemType = body["resource"]["fields"]?["System.WorkItemType"]?.ToString()
+            };
+        }
+        
+        
 
         public static int GetWorkItemIdFromUrl(string url)
         {

@@ -22,7 +22,7 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly object SampleJObject = new
+        public static readonly object SampleStateJObject = new
         {
             eventType = "workitem.updated",
             resource = new
@@ -35,12 +35,23 @@ namespace azure_boards_pbi_autorule_tests
                 fields = SampleFields
             }
         };
+        
+        public static readonly object SampleAreaJObject = new
+        {
+            eventType = "workitem.created",
+            resource = new
+            {
+                id = 2,
+                fields = SampleRevisionFields
+            }
+        };
 
         public static readonly object SampleJObjectWithWrongEventType = new
         {
-            eventType = "workitem.notUpdated",
+            eventType = "unknown",
             resource = new
             {
+                id = 2,
                 workItemId = 2,
                 revision = new
                 {
@@ -50,19 +61,19 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleTaskRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleTaskStateRules = new StateRuleConfiguration
         {
             Type = "Task",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },
@@ -72,12 +83,12 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
         
-        public static readonly RuleConfiguration SampleChildrensRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleChildrensStateRules = new StateRuleConfiguration
         {
             Type = "Product Backlog Item",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "Done",
                     SetChildrenStateTo = "Done",
@@ -85,19 +96,19 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleProductBacklogItemRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleProductBacklogItemStateRules = new StateRuleConfiguration
         {
             Type = "Product Backlog Item",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "New",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "New",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "Committed",
                     NotParentStates = new[] { "Done", "Removed" },
@@ -107,19 +118,19 @@ namespace azure_boards_pbi_autorule_tests
             }
         };
 
-        public static readonly RuleConfiguration SampleInvalidTaskRules = new RuleConfiguration
+        public static readonly StateRuleConfiguration SampleInvalidTaskStateRules = new StateRuleConfiguration
         {
             Type = "Task",
             Rules = new[]
             {
-                new Rule
+                new StateRule
                 {
                     IfState = "To Do",
                     NotParentStates = new[] { "Done", "Removed" },
                     SetParentStateTo = "Test",
                     All = true
                 },
-                new Rule
+                new StateRule
                 {
                     IfState = "In Progress",
                     NotParentStates = new[] { "Done", "Removed" },
