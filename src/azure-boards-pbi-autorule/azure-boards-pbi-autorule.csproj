@@ -13,7 +13,7 @@
         <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.170.0"/>
         <PackageReference Include="Serilog.AspNetCore" Version="4.1.0"/>
         <PackageReference Include="shortid" Version="3.0.1"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1"/>
     </ItemGroup>
 
 </Project>
